@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'HomePage.dart';
+import 'RegistrationScreen.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -12,6 +15,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String _loginInput = "";
   String _valueToShow = "";
   String _value = "";
+  static const engLanguage = "English";
+  static const ukrLanguage = "Українська";
+  var curLanguage = "English";
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +27,22 @@ class _LoginScreenState extends State<LoginScreen> {
           centerTitle: true,
           title: const Text(
               'Для того щоб скористуватися сайтом потрібно пройти аутентифікацію'),
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                    child: Text(
+                      'Українська',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                PopupMenuItem(
+                    child:
+                    Text('English', style: TextStyle(color: Colors.white))),
+              ],
+              color: Colors.black,
+              child: Icon(Icons.location_on),
+            )
+          ],
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -33,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           )),
           child: Column(
+
             children: [
               Container(
                 margin: EdgeInsetsDirectional.fromSTEB(30, 75, 40, 0),
@@ -114,9 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: EdgeInsetsDirectional.fromSTEB(100, 7, 10, 5),
                     child: TextButton(
-                      onPressed: () {
-
-                      },
+                      onPressed: () {},
                       child: Text(
                         "Забули пароль?",
                         style: TextStyle(color: Colors.black, fontSize: 15),
@@ -128,6 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsetsDirectional.fromSTEB(200, 7, 65, 5),
                     child: TextButton(
                       onPressed: () {
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return RegistrationScreen();
+                        }), (route) => false);
                       },
                       child: Text(
                         "Зареєструватися",
@@ -137,6 +162,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     margin: EdgeInsetsDirectional.fromSTEB(0, 0, 40, 0),
                   ),
                 ],
+              ),
+              Container(
+                height: 40,
+                width: 180,
+                margin: EdgeInsetsDirectional.fromSTEB(100, 35, 100, 0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return HomePage();
+                        }), (route) => false);
+                  },
+                  child: Text('Авторизуватися',style: TextStyle(color: Colors.white, fontSize: 15),),
+                ),
               )
             ],
           ),

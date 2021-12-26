@@ -1,3 +1,4 @@
+import 'package:diving/Pages/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:diving/Pages/RegistrationScreen.dart';
 
@@ -11,8 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'ProDiving',
-
         // color: Colors.red[300];
-        home: RegistrationScreen());
+        home: LoginScreen());
   }
 }
