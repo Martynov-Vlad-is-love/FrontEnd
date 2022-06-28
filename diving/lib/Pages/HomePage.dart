@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'CoursesPage.dart';
 import 'ProfilePage.dart';
+import 'AboutUsPage.dart';
 import 'RegistrationScreen.dart';
 
 class HomePage extends StatefulWidget {
@@ -141,7 +142,13 @@ class _HomePageState extends State<HomePage> {
                         )),
                         child: Center(
                             child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return AboutUsPage();
+                                          }), (route) => false);
+                                },
                                 style: TextButton.styleFrom(
                                     fixedSize: Size(500, 500)),
                                 child: Text(

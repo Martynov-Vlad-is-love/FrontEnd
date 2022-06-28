@@ -172,6 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () {
+
                     Navigator.pushAndRemoveUntil(context,
                         MaterialPageRoute(builder: (BuildContext context) {
                           return HomePage();
