@@ -1,4 +1,4 @@
-import 'package:diving/ApiConnection/ApiClient.dart';
+import 'package:diving/Repository/CourseRepository.dart';
 import 'package:diving/Models/Course.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class _CoursesPageState extends State<CoursesPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "Українська";
-  var client = ApiClient();
+  var client = CourseRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -106,15 +106,15 @@ class _CoursesPageState extends State<CoursesPage> {
                                   children: [
                                     Expanded(
                                       child: Container(
-                                          child: Text(course.courseName),
+                                          child: Text('${course.courseName}'),
                                       ),
                                     ),
                                     Container(
-                                        child: Text(course.minHoursUnderWater.toString()),
+                                        child: Text('${course.minHoursUnderWater.toString()}'),
                                     ),
                                     Expanded(
                                       child: Container(
-                                          child: Text(course.cost.toString()),
+                                          child: Text('${course.cost.toString()}'),
                                         alignment: Alignment.centerRight,
                                       ),
                                     ),
@@ -136,9 +136,9 @@ class _CoursesPageState extends State<CoursesPage> {
 
 class CustomSearchDelegate extends SearchDelegate {
   List<String> searchTerms = [
-    'Trainee'
-        'Intermediate'
-        'Pro'
+    'Trainee',
+    'Intermediate',
+    'Pro'
   ];
 
   @override

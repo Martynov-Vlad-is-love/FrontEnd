@@ -1,5 +1,11 @@
 class Language {
-  int _id;
-  String languageName;
-  Language(this._id, this.languageName);
+  int? id;
+  String? languageName;
+
+  Language(this.id, this.languageName);
+
+  Language.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    languageName = json["languageName"];
+  }
 }

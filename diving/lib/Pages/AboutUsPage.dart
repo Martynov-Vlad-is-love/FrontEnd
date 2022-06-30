@@ -1,4 +1,4 @@
-import 'package:diving/ApiConnection/ApiClient.dart';
+import 'package:diving/Repository/CourseRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,7 @@ class _AboutUsPage extends State<AboutUsPage>{
         child: Column(
           children: [
             ElevatedButton(onPressed: () {
-              var apiClient = ApiClient();
+              var apiClient = CourseRepository();
 
             },
             child: Text('press'),

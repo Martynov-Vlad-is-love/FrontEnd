@@ -1,10 +1,13 @@
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Models/User.dart';
 import 'HomePage.dart';
 import 'RegistrationScreen.dart';
 
 class LoginScreen extends StatefulWidget {
+  final userRepository = UserRepository();
   @override
   State<StatefulWidget> createState() {
     return _LoginScreenState();
@@ -18,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "English";
+
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onChanged: (String val) {
                       _loginInput = val;
+
                     }),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -94,24 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 margin: EdgeInsetsDirectional.fromSTEB(500, 35, 500, 0),
                 padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
                 child: TextFormField(
-                  controller: TextEditingController.fromValue(TextEditingValue(
-                      text: _valueToShow,
-                      selection: new TextSelection.collapsed(
-                          offset: _valueToShow.length))),
-                  onChanged: (String val) {
-                    String value = "";
-                    if (val.length > _loginInput.length) {
-                      value += val.substring(_loginInput.length, val.length);
-                    }
-                    if (val.length < _loginInput.length) {
-                      value = _value.substring(1, val.length);
-                    }
-                    String valueToShow = "*" * val.length;
-                    setState(() {
-                      _valueToShow = valueToShow;
-                      _loginInput = value;
-                    });
-                  },
+                  controller: passwordController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Введіть пароль",
@@ -171,12 +160,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
                   ),
-                  onPressed: () {
-
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return HomePage();
-                        }), (route) => false);
+                  onPressed: () async{
+                    print(passwordController.text);
+                    User? user = await widget.userRepository.authentication(_loginInput, passwordController.text);
+                    if(user == null){
+                      return showDialog(context: context, builder: (context){
+                        return AlertDialog(title: Text("Wrong login or password"),);
+                      });
+                    }
+                    else{
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                            return HomePage();
+                          }), (route) => false);
+                    }
                   },
                   child: Text('Авторизуватися',style: TextStyle(color: Colors.white, fontSize: 15),),
                 ),
