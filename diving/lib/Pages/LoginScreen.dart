@@ -1,3 +1,4 @@
+import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'HomePage.dart';
 import 'RegistrationScreen.dart';
 
 class LoginScreen extends StatefulWidget {
-  final userRepository = UserRepository();
+
   @override
   State<StatefulWidget> createState() {
     return _LoginScreenState();
@@ -22,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static const ukrLanguage = "Українська";
   var curLanguage = "English";
 
+  final userController = UserController(UserRepository());
   final passwordController = TextEditingController();
 
   @override
@@ -162,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   onPressed: () async{
                     print(passwordController.text);
-                    User? user = await widget.userRepository.authentication(_loginInput, passwordController.text);
+                    User? user = await userController.authentication(_loginInput, passwordController.text);
                     if(user == null){
                       return showDialog(context: context, builder: (context){
                         return AlertDialog(title: Text("Wrong login or password"),);
@@ -171,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     else{
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return HomePage();
+                            return HomePage(user);
                           }), (route) => false);
                     }
                   },

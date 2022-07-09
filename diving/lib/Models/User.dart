@@ -16,35 +16,35 @@ class User{
   User(this.id, this.login, this.password, this.name, this.surname, this.age, this.maxDepth, this.hoursUnderWater, this.registrationDate, this.disease, this.phoneNumber, this.roleId,this.languageId);
 
   User.fromJson(Map<String, dynamic> json){
-    id = json["id"];
+    id = json["id"] as int?;
     login = json["login"];
     password = json["password"];
     name = json["name"];
     surname = json["surname"];
-    age = json["age"];
-    maxDepth = json["maxDepth"];
-    hoursUnderWater = json["hoursUnderWater"];
+    age = json["age"] as int?;
+    maxDepth = json["maxDepth"] as double?;
+    hoursUnderWater = json["hoursUnderWater"] as double?;
     registrationDate = json["registrationDate"];
     disease = json["disease"];
     phoneNumber = json["phoneNumber"];
-    roleId = json["roleId"];
-    languageId = json["languageId"];
+    roleId = json["roleId"] as int?;
+    languageId = json["languageId"] as int?;
   }
 
-  Map<String, dynamic> toJson(){
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["login"] = this.login;
-    data["password"] = this.password;
-    data["name"] = this.name;
-    data["surname"] = this.surname;
-    data["age"] = this.age;
-    data["maxDepth"] = this.maxDepth;
-    data["hoursUnderWater"] = this.hoursUnderWater;
-    data["registrationDate"] = this.registrationDate;
-    data["disease"] = this.disease;
-    data["phoneNumber"] = this.phoneNumber;
-    data["roleId"] = this.disease;
-    data["languageId"] = this.phoneNumber;
+  Map<String, String?> toJson(){
+    final Map<String, String?> data = new Map<String, String?>();
+    data["Login"] = this.login;
+    data["Password"] = this.password;
+    data["Name"] = this.name;
+    data["Surname"] = this.surname;
+    data["Age"] = this.age.toString();
+    data["MaxDepth"] = this.maxDepth.toString();
+    data["HoursUnderWater"] = this.hoursUnderWater.toString();
+    data["RegistrationDate"] = this.registrationDate;
+    data["Disease"] = this.disease;
+    data["PhoneNumber"] = this.phoneNumber;
+    data["RoleId"] = this.roleId.toString();
+    data["LanguageId"] = this.languageId.toString();
     return data;
   }
 }

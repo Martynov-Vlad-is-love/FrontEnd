@@ -1,6 +1,9 @@
+import 'package:diving/Controllers/UserController.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Models/User.dart';
 import 'HomePage.dart';
 import 'LoginScreen.dart';
 
@@ -9,21 +12,77 @@ class ProfilePage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _ProfilePageState();
   }
+
+  final User user;
+
+  ProfilePage(this.user);
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   String _nameInput = "";
   int _hoursUnderWater = 0;
   String _surnameInput = "";
+  final _surnameController = TextEditingController();
   String _phoneNumberInput = "";
   int _ageInput = 0;
   String _passwordInput = "";
   String _loginInput = "";
-  String _valueToShow = "";
-  String _value = "";
+
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "English";
+
+  Widget inputInformationComponent(String text, String input) {
+    return Container(
+      height: 50,
+      width: 300,
+      margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
+      child: TextFormField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: text,
+            filled: false,
+          ),
+          onChanged: (String val) {
+            input = val;
+          }),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          color: Colors.redAccent,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: Offset(0, 1), // changes position of shadow
+            ),
+          ]),
+    );
+  }
+
+  List<Widget> userInformationBar1() => [
+        inputInformationComponent(widget.user.login ?? "", _loginInput),
+        inputInformationComponent(widget.user.password ?? "", _passwordInput),
+        inputInformationComponent(widget.user.phoneNumber ?? "", _phoneNumberInput),
+      ];
+
+  List<Widget> userInformationBar2() => [
+        inputInformationComponent(widget.user.name ?? "", _nameInput),
+        inputInformationComponent(widget.user.surname ?? "", _surnameController.text),
+        inputInformationComponent(widget.user.age.toString(), _ageInput.toString()),
+      ];
+
+  void save(String _nameInput, String _surnameInput,int _ageInput, String _phoneNumberInput, String _loginInput, String _passwordInput) {
+    if (_nameInput.isNotEmpty) widget.user.name = _nameInput ;
+    if (_surnameInput.isNotEmpty)widget.user.surname = _surnameController.text;
+    if (_ageInput != 0)widget.user.age = _ageInput;
+    if (_phoneNumberInput.isNotEmpty) widget.user.phoneNumber = _phoneNumberInput;
+    if (_loginInput.isNotEmpty)widget.user.login = _loginInput;
+    if (_passwordInput.isNotEmpty)widget.user.password = _passwordInput;
+  }
+
+  var userController = UserController(UserRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                  return HomePage();
+                  return HomePage(widget.user);
                 }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
@@ -93,202 +152,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 300,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Введіть логін",
-                                filled: false,
-                              ),
-                              onChanged: (String val) {
-                                _loginInput = val;
-                              }),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                            controller: TextEditingController.fromValue(
-                                TextEditingValue(
-                                    text: _valueToShow,
-                                    selection: new TextSelection.collapsed(
-                                        offset: _valueToShow.length))),
-                            onChanged: (String val) {
-                              String value = "";
-                              if (val.length > _passwordInput.length) {
-                                value += val.substring(
-                                    _passwordInput.length, val.length);
-                              }
-                              if (val.length < _passwordInput.length) {
-                                value = _value.substring(1, val.length);
-                              }
-                              String valueToShow = "*" * val.length;
-                              setState(() {
-                                _valueToShow = valueToShow;
-                                _passwordInput = value;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Введіть пароль",
-                              filled: false,
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(100)),
-                            color: Colors.redAccent,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54.withOpacity(0.5),
-                                spreadRadius: 3,
-                                blurRadius: 5,
-                                offset:
-                                    Offset(0, 1), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: 50,
-                          width: 300,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Введіть номер телефону",
-                                filled: false,
-                              ),
-                              onChanged: (String val) {
-                                _phoneNumberInput = val;
-                              }),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                      ],
+                      children: userInformationBar1(),
                     ),
                   ),
                   Container(
                     child: Column(
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Введіть ім'я",
-                                filled: false,
-                              ),
-                              onChanged: (String val) {
-                                _nameInput = val;
-                              }),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Введіть прізвище",
-                                filled: false,
-                              ),
-                              onChanged: (String val) {
-                                _surnameInput = val;
-                              }),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                        Container(
-                          width: 300,
-                          height: 50,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Введіть ваш вік",
-                                filled: false,
-                              ),
-                              onChanged: (String val) {
-                                _ageInput = int.parse(val);
-                              }),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                      ],
-                    ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar2()),
                   ),
                 ],
               ),
@@ -297,8 +167,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 35,
                 margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
                 padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                child:
-                    Center(child: Text('Ваш час під водою: $_hoursUnderWater годин')),
+                child: Center(
+                    child: Text('Ваш час під водою: ${widget.user.hoursUnderWater} годин')),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(100)),
                     color: Colors.redAccent,
@@ -320,7 +190,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.black),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    save(_nameInput,_surnameInput,_ageInput, _phoneNumberInput, _loginInput, _passwordInput);
+                    if(widget.user.id == null){
+                      print("User not found");
+                    }
+                    else if(widget.user.id != null){
+                      await userController.updateUserData(widget.user);
+                    }
+                  },
                   child: Text(
                     'Save',
                     style: TextStyle(color: Colors.white, fontSize: 15),

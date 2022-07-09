@@ -3,6 +3,8 @@ import 'package:diving/Models/Course.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Controllers/CourseController.dart';
+import '../Models/User.dart';
 import 'HomePage.dart';
 import 'RegistrationScreen.dart';
 
@@ -11,13 +13,18 @@ class CoursesPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _CoursesPageState();
   }
+  final User user;
+  CoursesPage(this.user);
 }
 
 class _CoursesPageState extends State<CoursesPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "Українська";
+
   var client = CourseRepository();
+  final courseController = CourseController(CourseRepository());
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,7 @@ class _CoursesPageState extends State<CoursesPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                  return HomePage();
+                  return HomePage(widget.user);
                 }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
@@ -84,7 +91,7 @@ class _CoursesPageState extends State<CoursesPage> {
             child: Column(
               children: [
                 FutureBuilder(
-                    future: client.getCourseData(),
+                    future: courseController.getCoursesList(),
                     builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.data == null) {
                         return Text('Loading...');

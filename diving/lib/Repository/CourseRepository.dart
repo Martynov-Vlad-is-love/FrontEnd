@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:diving/Models/Course.dart';
 import 'package:http/http.dart' as http;
 
-class CourseRepository {
-  Future<void> post(Course course) async{
+import 'Repository.dart';
+
+class CourseRepository implements Repository{
+
+  @override
+  Future<void> postData(course) async{
     await http.post(Uri.https('localhost:44329', 'api/Course'), body: {
       'courseName': '${course.courseName}',
       'cost': '${course.cost}',
@@ -14,7 +18,8 @@ class CourseRepository {
     });
   }
 
-  Future<List<Course>> getCourseData() async {
+  @override
+  Future<List<Course>> getAllData() async {
     var response = await http.get(Uri.https('localhost:44329', 'api/Course'));
 
     var jsonData = jsonDecode(response.body);
@@ -26,5 +31,24 @@ class CourseRepository {
     }
 
     return courses;
+  }
+
+  @override
+  Future<void> deleteData(int id) {
+    // TODO: implement deleteData
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Course>> getDataById(int id) {
+    // TODO: implement getDataById
+    throw UnimplementedError();
+  }
+
+
+  @override
+  Future<void> updateData(type) {
+    // TODO: implement updateData
+    throw UnimplementedError();
   }
 }

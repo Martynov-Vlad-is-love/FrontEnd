@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Models/User.dart';
 import 'CoursesPage.dart';
 import 'ProfilePage.dart';
 import 'AboutUsPage.dart';
@@ -11,6 +12,8 @@ class AdminHomePage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _AdminHomePageState();
   }
+  final User user;
+  AdminHomePage(this.user);
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
@@ -77,7 +80,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return CoursesPage();
+                                            return CoursesPage(widget.user);
                                           }), (route) => false);
                                 },
                                 style: TextButton.styleFrom(
@@ -109,7 +112,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return ProfilePage();
+                                            return ProfilePage(widget.user);
                                           }), (route) => false);
                                 },
                                 style: TextButton.styleFrom(
