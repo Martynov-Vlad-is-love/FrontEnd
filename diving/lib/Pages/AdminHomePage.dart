@@ -1,8 +1,10 @@
+import 'package:diving/Pages/UsersInfoPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/User.dart';
 import 'CoursesPage.dart';
+import 'LoginScreen.dart';
 import 'ProfilePage.dart';
 import 'AboutUsPage.dart';
 import 'RegistrationScreen.dart';
@@ -17,14 +19,32 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
-  String _loginInput = "";
-  String _valueToShow = "";
-  String _value = "";
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.logout),
+            onPressed: (){
+              showDialog(context: context,
+                  builder: (context) => SimpleDialog(
+                    title: Text("Do you really want to leave?"),
+                    contentPadding: const EdgeInsets.all(20.0),
+                    children: [
+                      TextButton(onPressed: (){
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return LoginScreen();
+                            }), (route) => false);
+                      }, child: const Text("Yes")),
+                      TextButton(onPressed: (){
+                        Navigator.of(context).pop();
+                      }, child: const Text("No"))
+                    ],
+                  )
+              );
+
+            },
+          ),
           backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
           centerTitle: true,
           actions: [
@@ -43,7 +63,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               child: Icon(Icons.location_on),
             )
           ],
-          title: const Text('ProDiver'),
+          title: const Text('ProDiver Admin'),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -149,7 +169,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return AboutUsPage();
+                                            return AboutUsPage(widget.user);
                                           }), (route) => false);
                                 },
                                 style: TextButton.styleFrom(
@@ -177,11 +197,16 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             )),
                         child: Center(
                             child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(builder: (BuildContext context) {
+                                        return UsersInfoPage(widget.user);
+                                      }), (route) => false);
+                                },
                                 style: TextButton.styleFrom(
                                     fixedSize: Size(500, 500)),
                                 child: Text(
-                                  'Contacts',
+                                  'Users',
                                   style: TextStyle(
                                       fontSize: 40,
                                       fontWeight: FontWeight.w700,

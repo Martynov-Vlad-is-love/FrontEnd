@@ -1,4 +1,5 @@
 import 'package:diving/Controllers/UserController.dart';
+import 'package:diving/Pages/AdminHomePage.dart';
 import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String _loginInput = "";
-  String _valueToShow = "";
-  String _value = "";
+  bool _security = true;
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "English";
@@ -102,12 +102,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 margin: EdgeInsetsDirectional.fromSTEB(500, 35, 500, 0),
                 padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
                 child: TextFormField(
+
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Введіть пароль",
                     filled: false,
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.visibility, color: Colors.grey[900],),
+                      onPressed: (){
+                        setState((){
+                          _security = !_security;
+                        });
+                    },
+                    )
                   ),
+                  obscureText: _security,
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -163,7 +173,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () async{
-                    print(passwordController.text);
                     User? user = await userController.authentication(_loginInput, passwordController.text);
                     if(user == null){
                       return showDialog(context: context, builder: (context){
@@ -171,10 +180,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                     }
                     else{
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                            return HomePage(user);
-                          }), (route) => false);
+                      if(user.roleId == 2){
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return AdminHomePage(user);
+                            }), (route) => false);
+                      }
+                      else{
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return HomePage(user);
+                            }), (route) => false);
+                      }
                     }
                   },
                   child: Text('Авторизуватися',style: TextStyle(color: Colors.white, fontSize: 15),),

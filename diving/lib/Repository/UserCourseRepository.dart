@@ -9,6 +9,14 @@ class UserCourseRepository implements Repository{
 
   final authority = 'localhost:44329';
   final unencodedPath = 'api/User_Courses';
+
+  String unencodedPathById(int id) {
+    return '$unencodedPath/$id';
+  }
+  String unencodedPathByUserId(int id) {
+    return '$unencodedPath/ByUser/$id';
+  }
+
   @override
   Future<void> postData(userCourse) async{
     var response = await http.post(Uri.https(authority, unencodedPath), body: userCourse.toJson());
@@ -30,11 +38,14 @@ class UserCourseRepository implements Repository{
   }
 
   @override
-  Future<void> deleteData(int id) {
-    // TODO: implement deleteData
-    throw UnimplementedError();
+  Future<void> deleteData(int id) async{
+    await http.delete(Uri.https(authority, unencodedPathById(id)));
   }
 
+  Future<void> deleteDataByUserId(int id) async{
+    var response = await http.delete(Uri.https(authority, unencodedPathByUserId(id)));
+    print(response.body);
+  }
 
   @override
   Future<List<UserCourse>> getDataById(int id) {

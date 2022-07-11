@@ -1,6 +1,9 @@
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Controllers/UserController.dart';
+import '../Models/User.dart';
 import 'LoginScreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -11,16 +14,58 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  String _nameInput = "";
-  String _surnameInput = "";
-  int _ageInput = 0;
-  String _passwordInput = "";
-  String _loginInput = "";
-  String _valueToShow = "";
-  String _value = "";
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "English";
+
+  bool wrongInput = false;
+
+  final _nameController = TextEditingController(text: "");
+  final _surnameController = TextEditingController(text: "");
+  final _ageController = TextEditingController(text: "");
+  final _loginController = TextEditingController(text: "");
+  final _passwordController = TextEditingController(text: "");
+
+  var userController = UserController(UserRepository());
+
+  User? register(){
+
+    List<String> data = [];
+    data.add(_nameController.text);
+    data.add(_surnameController.text);
+    data.add(_loginController.text);
+    data.add(_passwordController.text);
+    data.add(_ageController.text);
+
+    for(int i = 0; i < 4; i++){
+      if(data[i].length < 2){
+        wrongInput = true;
+      }
+    }
+
+    if(wrongInput == false){
+      User user = new User(
+        0,
+        _loginController.text,
+        _passwordController.text,
+        _nameController.text,
+        _surnameController.text,
+        int.parse(_ageController.text),
+        0,
+        0,
+        '',
+        'no',
+          'Номер телефону не вказаний',
+        0,
+        0
+      );
+      return user;
+    }else{
+      return null;
+
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +129,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         hintText: "Введіть логін",
                         filled: false,
                       ),
-                      onChanged: (String val) {
-                        _loginInput = val;
-                      }),
+                      controller: _loginController,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.redAccent,
@@ -104,24 +148,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   margin: EdgeInsetsDirectional.fromSTEB(500, 35, 500, 0),
                   padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
                   child: TextFormField(
-                    controller: TextEditingController.fromValue(TextEditingValue(
-                        text: _valueToShow,
-                        selection: new TextSelection.collapsed(
-                            offset: _valueToShow.length))),
-                    onChanged: (String val) {
-                      String value = "";
-                      if (val.length > _passwordInput.length) {
-                        value += val.substring(_passwordInput.length, val.length);
-                      }
-                      if (val.length < _passwordInput.length) {
-                        value = _value.substring(1, val.length);
-                      }
-                      String valueToShow = "*" * val.length;
-                      setState(() {
-                        _valueToShow = valueToShow;
-                        _passwordInput = value;
-                      });
-                    },
+                    controller: _passwordController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Введіть пароль",
@@ -141,7 +168,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ],
                   ),
                 ),
-
                 Container(
                   height: 50,
                   margin: EdgeInsetsDirectional.fromSTEB(500, 35, 500, 0),
@@ -152,9 +178,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         hintText: "Введіть ім'я",
                         filled: false,
                       ),
-                      onChanged: (String val) {
-                        _nameInput = val;
-                      }),
+                      controller: _nameController,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.redAccent,
@@ -177,9 +202,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         hintText: "Введіть прізвище",
                         filled: false,
                       ),
-                      onChanged: (String val) {
-                        _surnameInput = val;
-                      }),
+                      controller: _surnameController,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.redAccent,
@@ -202,9 +226,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         hintText: "Введіть ваш вік",
                         filled: false,
                       ),
-                      onChanged: (String val) {
-                        _ageInput = int.parse(val);
-                      }),
+                      controller: _ageController,
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.redAccent,
@@ -258,7 +281,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
                     ),
-                    onPressed: () {},
+                    onPressed: () async{
+                      if(register() == null){
+                        return showDialog(context: context, builder: (context){
+                          return AlertDialog(title: Text("Data can't be empty or less than 3 liters"),);
+                        });
+                      }
+                      else{
+                        try{
+                          await userController.registration(register()!);
+
+                          Navigator.pushAndRemoveUntil(context,
+                              MaterialPageRoute(builder: (BuildContext context) {
+                                return LoginScreen();
+                              }), (route) => false);
+                        }catch(ex){
+                          return showDialog(context: context, builder: (context){
+                            return AlertDialog(title: Text(ex.toString()),);
+                          });
+                        }
+
+
+                      }
+                    },
                     child: Text('Зареєструватися',style: TextStyle(color: Colors.white, fontSize: 15),),
                   ),
                 )

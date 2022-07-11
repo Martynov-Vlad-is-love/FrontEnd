@@ -1,3 +1,4 @@
+import 'package:diving/Pages/LoginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,14 +18,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _loginInput = "";
-  String _valueToShow = "";
-  String _value = "";
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.logout),
+          onPressed: (){
+            showDialog(context: context,
+                builder: (context) => SimpleDialog(
+                  title: Text("Do you really want to leave?"),
+                  contentPadding: const EdgeInsets.all(20.0),
+                  children: [
+                    TextButton(onPressed: (){
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                            return LoginScreen();
+                          }), (route) => false);
+                    }, child: const Text("Yes")),
+                    TextButton(onPressed: (){
+                      Navigator.of(context).pop();
+                    }, child: const Text("No"))
+                  ],
+                )
+            );
+
+          },
+          ),
           backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
           centerTitle: true,
           actions: [
@@ -149,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return AboutUsPage();
+                                            return AboutUsPage(widget.user);
                                           }), (route) => false);
                                 },
                                 style: TextButton.styleFrom(

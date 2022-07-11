@@ -19,4 +19,11 @@ class UserCourseController{
     return getUserCourseData(course.id!);
   }
 
+  Future<void> deleteUserCourse(int id) async{
+    await _userCourseRepository.deleteData(id);
+  }
+  Future<void> deleteUserCoursesByUserId(int id) async{
+    await _userCourseRepository.deleteDataByUserId(id);
+  }
+
 }

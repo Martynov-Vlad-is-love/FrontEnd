@@ -1,4 +1,4 @@
-class User{
+class User {
   int? id;
   String? login;
   String? password;
@@ -13,9 +13,22 @@ class User{
   int? roleId;
   int? languageId;
 
-  User(this.id, this.login, this.password, this.name, this.surname, this.age, this.maxDepth, this.hoursUnderWater, this.registrationDate, this.disease, this.phoneNumber, this.roleId,this.languageId);
+  User(
+      this.id,
+      this.login,
+      this.password,
+      this.name,
+      this.surname,
+      this.age,
+      this.maxDepth,
+      this.hoursUnderWater,
+      this.registrationDate,
+      this.disease,
+      this.phoneNumber,
+      this.roleId,
+      this.languageId);
 
-  User.fromJson(Map<String, dynamic> json){
+  User.fromJson(Map<String, dynamic> json) {
     id = json["id"] as int?;
     login = json["login"];
     password = json["password"];
@@ -31,20 +44,39 @@ class User{
     languageId = json["languageId"] as int?;
   }
 
-  Map<String, String?> toJson(){
-    final Map<String, String?> data = new Map<String, String?>();
-    data["Login"] = this.login;
-    data["Password"] = this.password;
-    data["Name"] = this.name;
-    data["Surname"] = this.surname;
-    data["Age"] = this.age.toString();
-    data["MaxDepth"] = this.maxDepth.toString();
-    data["HoursUnderWater"] = this.hoursUnderWater.toString();
-    data["RegistrationDate"] = this.registrationDate;
-    data["Disease"] = this.disease;
-    data["PhoneNumber"] = this.phoneNumber;
-    data["RoleId"] = this.roleId.toString();
-    data["LanguageId"] = this.languageId.toString();
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      "id": this.id.toString(),
+      "login": this.login,
+      "password": this.password,
+      "name": this.name,
+      "surname": this.surname,
+      "age": this.age.toString(),
+      "maxDepth": this.maxDepth.toString(),
+      "hoursUnderWater": this.hoursUnderWater.toString(),
+      "registrationDate": this.registrationDate.toString(),
+      "disease": this.disease,
+      "phoneNumber": this.phoneNumber,
+      "roleId": this.roleId.toString(),
+      "languageId": this.languageId.toString(),
+    };
+    return data;
+  }
+  Map<String, String?> registrationToJson() {
+    final Map<String, String?> data = <String, String?>{
+      "login": this.login,
+      "password": this.password,
+      "name": this.name,
+      "surname": this.surname,
+      "age": this.age.toString(),
+      "maxDepth": this.maxDepth.toString(),
+      "hoursUnderWater": this.hoursUnderWater.toString(),
+      "registrationDate": this.registrationDate.toString(),
+      "disease": this.disease,
+      "phoneNumber": this.phoneNumber,
+      "roleId": this.roleId.toString(),
+      "languageId": this.languageId.toString(),
+    };
     return data;
   }
 }
