@@ -18,12 +18,14 @@ class Course{
   }
 
   Map<String, dynamic> toJson(){
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["courseName"] = this.courseName;
-    data["cost"] = this.cost;
-    data["description"] = this.description;
-    data["minHoursUnderWater"] = this.minHoursUnderWater;
-    data["image"] = this.image;
+    final Map<String, dynamic> data = <String, dynamic>{
+      "id": this.id.toString(),
+      "courseName": this.courseName,
+      "cost": this.cost.toString(),
+      "description": this.description,
+      "minHoursUnderWater": this.minHoursUnderWater.toString(),
+      "image": this.image,
+    };
     return data;
   }
 

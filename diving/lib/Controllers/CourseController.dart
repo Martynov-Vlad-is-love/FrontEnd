@@ -6,17 +6,24 @@ class CourseController{
   final CourseRepository _courseRepository;
   CourseController(this._courseRepository);
 
+  Future<void> postCourse(Course course) async{
+    await _courseRepository.postData(course);
+  }
   Future<List<Course>> getCoursesList() async{
-    return _courseRepository.getAllData();
+    return await _courseRepository.getAllData();
   }
 
   Future<List<Course>> getCourseData(int id) async{
-    return _courseRepository.getDataById(id);
+    return await _courseRepository.getDataById(id);
   }
 
-  Future<List<Course>> updateCourseData(Course course) async{
+  Future<void> updateCourseData(Course course) async{
     await _courseRepository.updateData(course);
-    return getCourseData(course.id!);
+  }
+
+  Future<void> deleteCourse(int id) async{
+    await _courseRepository.deleteData(id);
+
   }
 
 }

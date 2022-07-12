@@ -6,21 +6,30 @@ import 'package:http/http.dart' as http;
 import 'Repository.dart';
 
 class CourseRepository implements Repository{
+  final authority = 'localhost:44329';
+  final unencodedPath = 'api/Course';
+
+  String unencodedPathById(int id) {
+    return 'api/Course/$id';
+  }
 
   @override
   Future<void> postData(course) async{
-    await http.post(Uri.https('localhost:44329', 'api/Course'), body: {
-      'courseName': '${course.courseName}',
-      'cost': '${course.cost}',
-      'description': '${course.description}',
-      'minHoursUnderWater': '${course.minHoursUnderWater}',
-      'image': '${course.image}'
-    });
+    var jsonMap = course.toJson();
+
+    for (var item in jsonMap.keys) {
+      print("$item: ${jsonMap[item]}, ${jsonMap[item].runtimeType}");
+    }
+
+    var response = await http.post(Uri.https(authority, unencodedPath, jsonMap));
+
+    print(response.body);
+
   }
 
   @override
   Future<List<Course>> getAllData() async {
-    var response = await http.get(Uri.https('localhost:44329', 'api/Course'));
+    var response = await http.get(Uri.https(authority, unencodedPath));
 
     var jsonData = jsonDecode(response.body);
 
@@ -34,21 +43,28 @@ class CourseRepository implements Repository{
   }
 
   @override
-  Future<void> deleteData(int id) {
-    // TODO: implement deleteData
-    throw UnimplementedError();
+  Future<void> deleteData(int id) async{
+  await http.delete(Uri.https(authority, unencodedPathById(id)));
   }
 
   @override
-  Future<List<Course>> getDataById(int id) {
+  Future<List<Course>> getDataById(int id) async{
     // TODO: implement getDataById
     throw UnimplementedError();
   }
 
 
   @override
-  Future<void> updateData(type) {
-    // TODO: implement updateData
-    throw UnimplementedError();
+  Future<void> updateData(course) async{
+    var jsonMap = course.toJson();
+
+    var response = await http.put(Uri.https('localhost:44329', unencodedPathById(course.id)),
+        body: jsonEncode(jsonMap),
+        headers: {
+          'Content-type': 'application/json',
+          "Accept": "application/json"
+        }
+    );
+    print(response.body);
   }
 }

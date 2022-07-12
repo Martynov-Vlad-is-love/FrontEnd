@@ -1,3 +1,4 @@
+import 'package:diving/Pages/AdminCoursesPage.dart';
 import 'package:diving/Pages/UsersInfoPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return CoursesPage(widget.user);
+                                            return AdminCoursesInfoPage(widget.user);
                                           }), (route) => false);
                                 },
                                 style: TextButton.styleFrom(
@@ -128,7 +129,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             )),
                         child: Center(
                             child: TextButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   Navigator.pushAndRemoveUntil(context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {

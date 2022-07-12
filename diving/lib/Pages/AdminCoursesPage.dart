@@ -4,30 +4,32 @@ import 'package:diving/Pages/EditingUserInfoPage.dart';
 import 'package:diving/Repository/UserCourseRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Controllers/UserController.dart';
+import '../Controllers/CourseController.dart';
 import '../Controllers/UserCourseController.dart';
 import '../Models/User.dart';
-import '../Repository/UserRepository.dart';
+import '../Repository/CourseRepository.dart';
 import 'AdminHomePage.dart';
+import 'CreateNewCoursePage.dart';
+import 'EditingCourseInfoPage.dart';
 import 'HomePage.dart';
 
-class UsersInfoPage extends StatefulWidget {
+class AdminCoursesInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _UsersInfoPageState();
+    return _AdminCoursesInfoPageState();
   }
   final User user;
-  UsersInfoPage(this.user);
+  AdminCoursesInfoPage(this.user);
 }
 
-class _UsersInfoPageState extends State<UsersInfoPage> {
+class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "Українська";
 
   final idController = TextEditingController(text: "");
   final userCourseController = UserCourseController(UserCourseRepository());
-  final userController = UserController(UserRepository());
+  final courseController = CourseController(CourseRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +99,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   height: 500,
                   child: SingleChildScrollView(
                     child: FutureBuilder(
-                        future: userController.getUsersList(),
+                        future: courseController.getCoursesList(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.data == null) {
                             return Text('Loading...');
@@ -106,15 +108,15 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                               shrinkWrap: true,
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, i) {
-                                final user = snapshot.data[i] as User;
+                                final course = snapshot.data[i] as Course;
                                 return Card(
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: (){
+                                      onTap: () async{
                                         Navigator.pushAndRemoveUntil(context,
                                             MaterialPageRoute(builder: (BuildContext context) {
-                                              return EditingUserInfoPage(widget.user,user);
+                                              return EditingCourseInfoPage(widget.user,course);
                                             }), (route) => false);
                                       },
                                       child: ListTile(
@@ -122,15 +124,15 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                                             children: [
                                               Expanded(
                                                 child: Container(
-                                                  child: Text('${user.id}'),
+                                                  child: Text('${course.id}'),
                                                 ),
                                               ),
                                               Container(
-                                                child: Text('${user.login}'),
+                                                child: Text('${course.courseName}'),
                                               ),
                                               Expanded(
                                                 child: Container(
-                                                  child: Text('${user.roleId.toString()}'),
+                                                  child: Text('${course.cost.toString()}'),
                                                   alignment: Alignment.centerRight,
                                                 ),
                                               ),
@@ -158,10 +160,10 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                     onPressed: () async{
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return CreateNewUserPage(widget.user);
+                            return CreateNewCoursePage(widget.user);
                           }), (route) => false);
                     },
-                    child: Text('Create new user',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text('Create new course',style: TextStyle(color: Colors.white, fontSize: 15),),
                   ),
                 ),
                 Container(
@@ -180,8 +182,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                             children: [
                               TextFormField(controller: idController),
                               TextButton(onPressed: () async{
-                                await userCourseController.deleteUserCoursesByUserId(int.parse(idController.text));
-                                await userController.deleteUser(int.parse(idController.text));
+                                await courseController.deleteCourse(int.parse(idController.text));
                                 Navigator.of(context).pop();
                               }, child: const Text("Delete")),
                               TextButton(onPressed: (){
@@ -191,7 +192,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                           )
                       );
                     },
-                    child: Text('Delete user by id',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text('Delete course by id',style: TextStyle(color: Colors.white, fontSize: 15),),
                   ),
                 )
               ],

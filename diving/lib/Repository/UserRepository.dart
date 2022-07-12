@@ -38,7 +38,7 @@ class UserRepository implements Repository{
         print("$item: ${jsonMap[item]}, ${jsonMap[item].runtimeType}");
       }
 
-      var response = await http.post(Uri.https(authority, 'api/Users/Registration', jsonMap));
+      var response = await http.post(Uri.https(authority, '$unencodedPath/Registration', jsonMap));
       print("Status code ${response.body}");
     } catch (ex) {
       print(ex);
@@ -122,7 +122,7 @@ class UserRepository implements Repository{
 
   @override
   Future<void> deleteData(int id) async {
-    var response = await http.delete(Uri.https(authority, 'api/Users/$id'));
+    var response = await http.delete(Uri.https(authority, unencodedPathById(id)));
     print(response.body);
   }
 }
