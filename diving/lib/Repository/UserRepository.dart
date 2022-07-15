@@ -10,7 +10,7 @@ class UserRepository implements Repository{
   final unencodedPath = 'api/Users';
 
   String unencodedPathById(int id) {
-    return 'api/Users/$id';
+    return '$unencodedPath/$id';
   }
 
   @override
@@ -102,22 +102,22 @@ class UserRepository implements Repository{
 
   @override
   Future<void> updateData(user) async {
-    var jsonMap = user.toJson();
+      var jsonMap = user.toJson();
 
-    for (var item in jsonMap.keys) {
-      print("$item: ${jsonMap[item]}, ${jsonMap[item].runtimeType}");
-    }
+      for (var item in jsonMap.keys) {
+        print("$item: ${jsonMap[item]}, ${jsonMap[item].runtimeType}");
+      }
 
-    var _jsonEncoded = jsonEncode(jsonMap);
+      var _jsonEncoded = jsonEncode(jsonMap);
 
-    var response = await http.put(
-        Uri.https(authority, unencodedPathById(user.id!)),
-        body: _jsonEncoded,
-        headers: {
-          'Content-type': 'application/json',
-          "Accept": "application/json"
-        });
-        print("Status code: ${response.body}");
+      var response = await http.put(
+          Uri.https(authority, unencodedPathById(user.id!)),
+          body: _jsonEncoded,
+          headers: {
+            'Content-type': 'application/json',
+            "Accept": "application/json"
+          });
+          print("Status code: ${response.body}");
   }
 
   @override

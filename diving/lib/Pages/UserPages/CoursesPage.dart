@@ -1,12 +1,11 @@
+import 'package:diving/Pages/UserPages/CourseInfoPage.dart';
 import 'package:diving/Repository/CourseRepository.dart';
 import 'package:diving/Models/Course.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Controllers/CourseController.dart';
-import '../Models/User.dart';
+import '../../Controllers/CourseController.dart';
+import '../../Models/User.dart';
 import 'HomePage.dart';
-import 'RegistrationScreen.dart';
 
 class CoursesPage extends StatefulWidget {
   @override
@@ -106,7 +105,10 @@ class _CoursesPageState extends State<CoursesPage> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: (){
-                                    print('Ok');
+                                    Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (BuildContext context) {
+                                          return CourseInfoPage(widget.user, course);
+                                        }), (route) => false);
                                   },
                                   child: ListTile(
                                         title: Row(

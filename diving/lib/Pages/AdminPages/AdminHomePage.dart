@@ -1,14 +1,14 @@
-import 'package:diving/Pages/AdminCoursesPage.dart';
-import 'package:diving/Pages/UsersInfoPage.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 
-import '../Models/User.dart';
-import 'CoursesPage.dart';
-import 'LoginScreen.dart';
-import 'ProfilePage.dart';
-import 'AboutUsPage.dart';
-import 'RegistrationScreen.dart';
+import '../../Models/User.dart';
+import '../LoginScreen.dart';
+import '../ProfilePage.dart';
+import '../AboutUsPage.dart';
+import 'AdminCoursesPage.dart';
+import 'PromoCodesListPage.dart';
+import 'UserCoursesListPage.dart';
+import 'UsersInfoPage.dart';
 
 class AdminHomePage extends StatefulWidget {
   @override
@@ -146,6 +146,39 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                       color: Colors.black),
                                 ))),
                         margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                      ),
+                      Container(
+                        width: 500,
+                        height: 500,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Colors.indigo,
+                                Colors.redAccent,
+                              ],
+                            )),
+                        child: Center(
+                            child: TextButton(
+                                onPressed: () async{
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            //TODO: promo code page
+                                            return PromoCodesListPage((widget.user));
+                                          }), (route) => false);
+                                },
+                                style: TextButton.styleFrom(
+                                    fixedSize: Size(500, 500)),
+                                child: Text(
+                                  'Promo codes',
+                                  style: TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black),
+                                ))),
+                        margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
                       )
                     ],
                   ),
@@ -192,8 +225,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
                               begin: Alignment.topRight,
                               end: Alignment.bottomLeft,
                               colors: [
-                                Colors.deepPurpleAccent,
                                 Colors.deepOrange,
+                                Colors.cyanAccent,
                               ],
                             )),
                         child: Center(
@@ -214,11 +247,45 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                       color: Colors.black),
                                 ))),
                         margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                      ),
+                      Container(
+                        width: 500,
+                        height: 500,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Colors.deepOrange,
+                                Colors.purpleAccent,
+                              ],
+                            )),
+                        child: Center(
+                            child: TextButton(
+                                onPressed: () async{
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return UserCoursesListPage(widget.user);
+                                          }), (route) => false);
+                                },
+                                style: TextButton.styleFrom(
+                                    fixedSize: Size(500, 500)),
+                                child: Text(
+                                  'User courses',
+                                  style: TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black),
+                                ))),
+                        margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
                       )
                     ],
-                  )
+                  ),
                 ],
-              )),
-        ));
+              )
+          ),
+        )
+    );
   }
 }

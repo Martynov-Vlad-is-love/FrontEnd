@@ -1,12 +1,11 @@
 import 'package:diving/Controllers/UserController.dart';
-import 'package:diving/Pages/AdminHomePage.dart';
+import 'package:diving/Pages/AdminPages/AdminHomePage.dart';
 import 'package:diving/Repository/UserRepository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/User.dart';
-import 'HomePage.dart';
 import 'RegistrationScreen.dart';
+import 'UserPages/HomePage.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -33,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
           centerTitle: true,
           title: const Text(
-              'Для того щоб скористуватися сайтом потрібно пройти аутентифікацію'),
+              'You should authorize to use this web-site'),
           actions: [
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
@@ -67,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 margin: EdgeInsetsDirectional.fromSTEB(30, 75, 40, 0),
                 child: Text(
-                  "Авторизація",
+                  "Authorization",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                 ),
               ),
@@ -78,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextFormField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: "Введіть логин",
+                      hintText: "Login",
                       filled: false,
                     ),
                     onChanged: (String val) {
@@ -106,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Введіть пароль",
+                    hintText: "Password",
                     filled: false,
                     suffixIcon: IconButton(
                       icon: Icon(Icons.visibility, color: Colors.grey[900],),
@@ -133,21 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsetsDirectional.fromSTEB(100, 7, 10, 5),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Забули пароль?",
-                        style: TextStyle(color: Colors.black, fontSize: 15),
-                      ),
-                    ),
-                    margin: EdgeInsetsDirectional.fromSTEB(0, 0, 40, 0),
-                  ),
-                  Container(
-                    padding: EdgeInsetsDirectional.fromSTEB(200, 7, 65, 5),
+                    padding: EdgeInsetsDirectional.fromSTEB(525, 10, 65, 5),
                     child: TextButton(
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(context,
@@ -156,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         }), (route) => false);
                       },
                       child: Text(
-                        "Зареєструватися",
+                        "Registration",
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
                     ),
@@ -194,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     }
                   },
-                  child: Text('Авторизуватися',style: TextStyle(color: Colors.white, fontSize: 15),),
+                  child: Text('Authorize',style: TextStyle(color: Colors.white, fontSize: 15),),
                 ),
               )
             ],

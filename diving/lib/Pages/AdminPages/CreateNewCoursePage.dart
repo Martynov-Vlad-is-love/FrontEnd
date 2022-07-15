@@ -1,14 +1,12 @@
-import 'package:diving/Controllers/UserController.dart';
-import 'package:diving/Pages/AdminCoursesPage.dart';
-import 'package:diving/Repository/UserRepository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Controllers/CourseController.dart';
-import '../Models/Course.dart';
-import '../Models/User.dart';
-import '../Repository/CourseRepository.dart';
-import 'UsersInfoPage.dart';
+
+import '../../Controllers/CourseController.dart';
+import '../../Models/Course.dart';
+import '../../Models/User.dart';
+import '../../Repository/CourseRepository.dart';
+import 'AdminCoursesPage.dart';
+
 
 class CreateNewCoursePage extends StatefulWidget {
   @override

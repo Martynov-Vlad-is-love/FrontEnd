@@ -13,10 +13,20 @@ class PromoCodeController{
   Future<List<PromoCode>> getPromoCodeData(int id) async{
     return _promoCodeRepository.getDataById(id);
   }
+  Future<PromoCode> getPromoCodeDataByName(String promoCode) async{
+    return _promoCodeRepository.getDataByName(promoCode);
+  }
 
-  Future<List<PromoCode>> updatePromoCodeData(Course course) async{
-    await _promoCodeRepository.updateData(course);
-    return getPromoCodeData(course.id!);
+  Future<void> updatePromoCodeData(PromoCode promoCode) async{
+    await _promoCodeRepository.updateData(promoCode);
+  }
+
+  Future<void> deletePromoCode(int id) async{
+    await _promoCodeRepository.deleteData(id);
+  }
+
+  Future<void> postPromoCode(PromoCode promoCode) async{
+    await _promoCodeRepository.postData(promoCode);
   }
 
 }

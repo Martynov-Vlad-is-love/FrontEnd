@@ -1,35 +1,32 @@
-import 'package:diving/Models/Course.dart';
-import 'package:diving/Pages/CreateNewUserPage.dart';
-import 'package:diving/Pages/EditingUserInfoPage.dart';
-import 'package:diving/Repository/UserCourseRepository.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:diving/Pages/AdminPages/CreateNewPromoCodePage.dart';
 import 'package:flutter/material.dart';
-import '../Controllers/CourseController.dart';
-import '../Controllers/UserCourseController.dart';
-import '../Models/User.dart';
-import '../Repository/CourseRepository.dart';
+import '../../Controllers/PromoCodeController.dart';
+import '../../Controllers/UserController.dart';
+import '../../Models/PromoCode.dart';
+import '../../Models/User.dart';
+import '../../Repository/PromoCodeRepository.dart';
+import '../../Repository/UserRepository.dart';
 import 'AdminHomePage.dart';
-import 'CreateNewCoursePage.dart';
-import 'EditingCourseInfoPage.dart';
-import 'HomePage.dart';
+import 'EditingPromoCodeInfoPage.dart';
 
-class AdminCoursesInfoPage extends StatefulWidget {
+
+class PromoCodesListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _AdminCoursesInfoPageState();
+    return _PromoCodesListPageState();
   }
   final User user;
-  AdminCoursesInfoPage(this.user);
+  PromoCodesListPage(this.user);
 }
 
-class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
+class _PromoCodesListPageState extends State<PromoCodesListPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "Українська";
 
   final idController = TextEditingController(text: "");
-  final userCourseController = UserCourseController(UserCourseRepository());
-  final courseController = CourseController(CourseRepository());
+  final promoCodeController = PromoCodeController(PromoCodeRepository());
+  final userController = UserController(UserRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +96,7 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                   height: 500,
                   child: SingleChildScrollView(
                     child: FutureBuilder(
-                        future: courseController.getCoursesList(),
+                        future: promoCodeController.getPromoCodesList(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.data == null) {
                             return Text('Loading...');
@@ -108,15 +105,15 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                               shrinkWrap: true,
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, i) {
-                                final course = snapshot.data[i] as Course;
+                                final promoCode = snapshot.data[i] as PromoCode;
                                 return Card(
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: () async{
+                                      onTap: (){
                                         Navigator.pushAndRemoveUntil(context,
                                             MaterialPageRoute(builder: (BuildContext context) {
-                                              return EditingCourseInfoPage(widget.user,course);
+                                              return EditingPromoCodeInfoPage(widget.user,promoCode);
                                             }), (route) => false);
                                       },
                                       child: ListTile(
@@ -124,20 +121,27 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                                             children: [
                                               Expanded(
                                                 child: Container(
-                                                  child: Text('${course.id}'),
+                                                  child: Text('Id: ${promoCode.id}'),
                                                 ),
                                               ),
                                               Container(
-                                                child: Text('${course.courseName}'),
+                                                alignment: Alignment.centerRight,
+                                                child: Text('PromoCode: ${promoCode.promoCode}'),
                                               ),
                                               Expanded(
                                                 child: Container(
-                                                  child: Text('${course.cost.toString()}'),
+                                                  child: Text('Discount: ${promoCode.discount}'),
                                                   alignment: Alignment.centerRight,
                                                 ),
                                               ),
+                                              Expanded(
+                                                child: Container(
+                                                  alignment: Alignment.centerRight,
+                                                  child: Text('Is active: ${promoCode.isActive}'),
+                                                ),
+                                              ),
                                             ],
-                                          )
+                                          ),
                                       ),
 
                                     ),
@@ -151,7 +155,7 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                 ),
                 Container(
                   height: 40,
-                  width: 180,
+                  width: 250,
                   margin: EdgeInsetsDirectional.fromSTEB(100, 35, 100, 0),
                   child: ElevatedButton(
                     style: ButtonStyle(
@@ -160,15 +164,15 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                     onPressed: () async{
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return CreateNewCoursePage(widget.user);
+                            return CreateNewPromoCodePage(widget.user);
                           }), (route) => false);
                     },
-                    child: Text('Create new course',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text('Create new promo code',style: TextStyle(color: Colors.white, fontSize: 15),),
                   ),
                 ),
                 Container(
                   height: 40,
-                  width: 180,
+                  width: 250,
                   margin: EdgeInsetsDirectional.fromSTEB(100, 35, 100, 0),
                   child: ElevatedButton(
                     style: ButtonStyle(
@@ -177,12 +181,14 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                     onPressed: () async{
                       showDialog(context: context,
                           builder: (context) => SimpleDialog(
-                            title: Text("Do you really want to delete this user?"),
+                            title: Text("Do you really want to delete this promo code?"),
                             contentPadding: const EdgeInsets.all(20.0),
                             children: [
                               TextFormField(controller: idController),
                               TextButton(onPressed: () async{
-                                await courseController.deleteCourse(int.parse(idController.text));
+                                if(idController.text != "0"){
+                                  await promoCodeController.deletePromoCode(int.parse(idController.text));
+                                }
                                 Navigator.of(context).pop();
                               }, child: const Text("Delete")),
                               TextButton(onPressed: (){
@@ -192,7 +198,7 @@ class _AdminCoursesInfoPageState extends State<AdminCoursesInfoPage> {
                           )
                       );
                     },
-                    child: Text('Delete course by id',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text('Delete promo code by id',style: TextStyle(color: Colors.white, fontSize: 15),),
                   ),
                 )
               ],

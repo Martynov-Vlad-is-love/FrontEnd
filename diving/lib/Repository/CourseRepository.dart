@@ -10,7 +10,7 @@ class CourseRepository implements Repository{
   final unencodedPath = 'api/Course';
 
   String unencodedPathById(int id) {
-    return 'api/Course/$id';
+    return '$unencodedPath/$id';
   }
 
   @override

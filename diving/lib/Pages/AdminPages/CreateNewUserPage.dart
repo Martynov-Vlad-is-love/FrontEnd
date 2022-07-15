@@ -1,26 +1,30 @@
 import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../Models/User.dart';
+import 'UsersInfoPage.dart';
 
-import '../Models/User.dart';
-import 'AdminPages/AdminHomePage.dart';
-import 'UserPages/HomePage.dart';
-
-class ProfilePage extends StatefulWidget {
+class CreateNewUserPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _ProfilePageState();
+    return _CreateNewUserPageState();
   }
 
   final User user;
 
-  ProfilePage(this.user);
+
+  CreateNewUserPage(this.user);
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _CreateNewUserPageState extends State<CreateNewUserPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
 
+  bool wrongInput = false;
+
+  final _roleIdInput = TextEditingController(text: "");
   final _nameInput = TextEditingController(text: "");
   final _diseaseInput = TextEditingController(text: "");
   final _surnameController = TextEditingController(text: "");
@@ -28,9 +32,50 @@ class _ProfilePageState extends State<ProfilePage> {
   final _ageInput = TextEditingController(text: "");
   final _passwordInput = TextEditingController(text: "");
   final _loginInput = TextEditingController(text: "");
-  final _repeatedPasswordInput = TextEditingController(text: "");
+  final _maxDepthInput = TextEditingController(text: "");
+  final _hoursUnderWaterInput = TextEditingController(text: "");
 
-  bool wrongInput = false;
+  var userController = UserController(UserRepository());
+
+  User? register() {
+    List<String> data = [];
+    data.add(_nameInput.text);
+    data.add(_surnameController.text);
+    data.add(_loginInput.text);
+    data.add(_passwordInput.text);
+    data.add(_ageInput.text);
+    data.add(_phoneNumberInput.text);
+    data.add(_maxDepthInput.text);
+    data.add(_hoursUnderWaterInput.text);
+    data.add(_diseaseInput.text);
+    data.add(_roleIdInput.text);
+    for (int i = 0; i < 9; i++) {
+      if (data[i].length < 1) {
+        wrongInput = true;
+      }
+    }
+
+    if (wrongInput == false) {
+    User user = new User(
+          0,
+          _loginInput.text,
+          _passwordInput.text,
+          _nameInput.text,
+          _surnameController.text,
+          int.parse(_ageInput.text),
+          double.parse(_maxDepthInput.text),
+          double.parse(_hoursUnderWaterInput.text),
+          DateFormat("yyyy-MM-ddTHH:mm:ss.mmm").format(DateTime.now()),
+          _diseaseInput.text,
+          _phoneNumberInput.text,
+          int.parse(_roleIdInput.text),
+          0);
+      return user;
+    } else {
+      return null;
+    }
+  }
+
   bool checkPassword = true;
 
   Widget inputInformationComponent(
@@ -72,64 +117,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   List<Widget> userInformationBar1() => [
-        inputInformationComponent(
-            widget.user.login ?? "", _loginInput, "Login"),
-        inputInformationComponent(
-            widget.user.password ?? "", _passwordInput, "Password"),
-        inputInformationComponent(widget.user.password ?? "",
-            _repeatedPasswordInput, "Repeat Password"),
-        inputInformationComponent(
-            widget.user.phoneNumber ?? "", _phoneNumberInput, "Phone number"),
+        inputInformationComponent("", _loginInput, "Login"),
+        inputInformationComponent("", _passwordInput, "Password"),
+        inputInformationComponent("", _maxDepthInput, "Max depth"),
+        inputInformationComponent("", _phoneNumberInput, "Phone number"),
+        inputInformationComponent("", _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
       ];
 
   List<Widget> userInformationBar2() => [
-        inputInformationComponent(widget.user.name ?? "", _nameInput, "Name"),
-        inputInformationComponent(
-            widget.user.surname ?? "", _surnameController, "Surname"),
-        inputInformationComponent(widget.user.age.toString(), _ageInput, "Age"),
-        inputInformationComponent(
-            widget.user.disease ?? "", _diseaseInput, "Disease"),
+        inputInformationComponent("", _nameInput, "Name"),
+        inputInformationComponent("", _surnameController, "Surname"),
+        inputInformationComponent("", _ageInput, "Age"),
+        inputInformationComponent("", _diseaseInput, "Disease"),
+        inputInformationComponent("", _hoursUnderWaterInput, "Hours under water"),
       ];
-
-  void save() {
-    if (_nameInput.text.length > 2)
-      widget.user.name = _nameInput.text;
-    else if (_nameInput.text.isNotEmpty) wrongInput = true;
-
-    if (_surnameController.text.length > 2)
-      widget.user.surname = _surnameController.text;
-    else if (_surnameController.text.isNotEmpty) wrongInput = true;
-
-    if (_ageInput.text.length > 0 &&
-        int.tryParse(_ageInput.text) != null &&
-        int.tryParse(_ageInput.text)! > 7)
-      widget.user.age = int.tryParse(_ageInput.text);
-    else if (_ageInput.text.isNotEmpty) wrongInput = true;
-
-    if (_phoneNumberInput.text.length > 2)
-      widget.user.phoneNumber = _phoneNumberInput.text;
-    else if (_phoneNumberInput.text.isNotEmpty) wrongInput = true;
-
-    if (_loginInput.text.length > 2)
-      widget.user.login = _loginInput.text;
-    else if (_loginInput.text.isNotEmpty) wrongInput = true;
-
-    if (_diseaseInput.text.length > 2)
-      widget.user.disease = _diseaseInput.text;
-    else if (_diseaseInput.text.isNotEmpty) wrongInput = true;
-
-    if (_passwordInput.text.isNotEmpty &&
-        _repeatedPasswordInput.text.isNotEmpty) {
-      if (_passwordInput.text == _repeatedPasswordInput.text &&
-          _passwordInput.text.length > 3) {
-        widget.user.password = _passwordInput.text;
-      } else {
-        checkPassword = false;
-      }
-    }
-  }
-
-  var userController = UserController(UserRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
           centerTitle: true,
-          title: const Text('ProDiver'),
+          title: const Text('ProDiver Admin'),
           actions: [
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
@@ -168,10 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                  if (widget.user.roleId == 2)
-                    return AdminHomePage(widget.user);
-                  else
-                    return HomePage(widget.user);
+                  return UsersInfoPage(widget.user);
                 }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
@@ -193,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Container(
                 margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
                 child: Text(
-                  "Your profile",
+                  "Creating new user",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                 ),
               ),
@@ -214,26 +212,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               Container(
-                width: 250,
-                height: 35,
-                margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                child: Center(
-                    child: Text(
-                        'Ваш час під водою: ${widget.user.hoursUnderWater} годин')),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    color: Colors.redAccent,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black54.withOpacity(0.5),
-                        spreadRadius: 3,
-                        blurRadius: 5,
-                        offset: Offset(0, 1), // changes position of shadow
-                      ),
-                    ]),
-              ),
-              Container(
                 height: 40,
                 width: 180,
                 margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
@@ -243,7 +221,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () async {
-                    save();
                     if (wrongInput == true) {
                       return showDialog(
                           context: context,
@@ -258,19 +235,34 @@ class _ProfilePageState extends State<ProfilePage> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text("Passwords should be equal"),
+                              title: Text(
+                                  "Passwords should consist more than 3 symbols"),
                             );
                           });
                     } else {
-                      if (widget.user.id == null) {
-                        print("User not found");
-                      } else if (widget.user.id != null) {
-                        await userController.updateUserData(widget.user);
+                      if (register() == null) {
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                    "Passwords should consist more than 3 symbols"),
+                              );
+                            });
+                      } else {
+                        await userController.postUserData(register()!);
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Success"),
+                              );
+                            });
                       }
                     }
                   },
                   child: Text(
-                    'Save',
+                    'Create',
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),

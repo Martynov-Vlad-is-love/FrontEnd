@@ -2,27 +2,26 @@ import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../Models/User.dart';
+
+import '../../Models/User.dart';
 import 'UsersInfoPage.dart';
 
-class CreateNewUserPage extends StatefulWidget {
+class EditingUserInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _CreateNewUserPageState();
+    return _EditingUserInfoPageState();
   }
 
   final User user;
+  final User userToEdit;
 
+  EditingUserInfoPage(this.user, this.userToEdit);
 
-  CreateNewUserPage(this.user);
 }
 
-class _CreateNewUserPageState extends State<CreateNewUserPage> {
+class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
-
-  bool wrongInput = false;
 
   final _roleIdInput = TextEditingController(text: "");
   final _nameInput = TextEditingController(text: "");
@@ -35,47 +34,7 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
   final _maxDepthInput = TextEditingController(text: "");
   final _hoursUnderWaterInput = TextEditingController(text: "");
 
-  var userController = UserController(UserRepository());
-
-  User? register() {
-    List<String> data = [];
-    data.add(_nameInput.text);
-    data.add(_surnameController.text);
-    data.add(_loginInput.text);
-    data.add(_passwordInput.text);
-    data.add(_ageInput.text);
-    data.add(_phoneNumberInput.text);
-    data.add(_maxDepthInput.text);
-    data.add(_hoursUnderWaterInput.text);
-    data.add(_diseaseInput.text);
-    data.add(_roleIdInput.text);
-    for (int i = 0; i < 9; i++) {
-      if (data[i].length < 1) {
-        wrongInput = true;
-      }
-    }
-
-    if (wrongInput == false) {
-    User user = new User(
-          0,
-          _loginInput.text,
-          _passwordInput.text,
-          _nameInput.text,
-          _surnameController.text,
-          int.parse(_ageInput.text),
-          double.parse(_maxDepthInput.text),
-          double.parse(_hoursUnderWaterInput.text),
-          DateFormat("yyyy-MM-ddTHH:mm:ss.mmm").format(DateTime.now()),
-          _diseaseInput.text,
-          _phoneNumberInput.text,
-          int.parse(_roleIdInput.text),
-          0);
-      return user;
-    } else {
-      return null;
-    }
-  }
-
+  bool wrongInput = false;
   bool checkPassword = true;
 
   Widget inputInformationComponent(
@@ -117,20 +76,80 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
   }
 
   List<Widget> userInformationBar1() => [
-        inputInformationComponent("", _loginInput, "Login"),
-        inputInformationComponent("", _passwordInput, "Password"),
-        inputInformationComponent("", _maxDepthInput, "Max depth"),
-        inputInformationComponent("", _phoneNumberInput, "Phone number"),
-        inputInformationComponent("", _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
-      ];
+    inputInformationComponent(widget.userToEdit.login ?? "", _loginInput, "Login"),
+    inputInformationComponent(widget.userToEdit.password ?? "", _passwordInput, "Password"),
+    inputInformationComponent(widget.userToEdit.maxDepth.toString(), _maxDepthInput, "Max depth"),
+    inputInformationComponent(widget.userToEdit.phoneNumber ?? "", _phoneNumberInput, "Phone number"),
+    inputInformationComponent(widget.userToEdit.roleId.toString(), _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
+
+  ];
 
   List<Widget> userInformationBar2() => [
-        inputInformationComponent("", _nameInput, "Name"),
-        inputInformationComponent("", _surnameController, "Surname"),
-        inputInformationComponent("", _ageInput, "Age"),
-        inputInformationComponent("", _diseaseInput, "Disease"),
-        inputInformationComponent("", _hoursUnderWaterInput, "Hours under water"),
-      ];
+    inputInformationComponent(widget.userToEdit.name ?? "", _nameInput, "Name"),
+    inputInformationComponent(widget.userToEdit.surname ?? "", _surnameController, "Surname"),
+    inputInformationComponent(widget.userToEdit.age.toString(), _ageInput, "Age"),
+    inputInformationComponent(widget.userToEdit.disease ?? "", _diseaseInput, "Disease"),
+    inputInformationComponent(widget.userToEdit.hoursUnderWater.toString(), _hoursUnderWaterInput, "Hours under water"),
+  ];
+
+  void save() {
+    if (_nameInput.text.length >= 2)
+      widget.userToEdit.name = _nameInput.text;
+    else if(_nameInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_surnameController.text.length > 2)
+      widget.userToEdit.surname = _surnameController.text;
+    else if(_surnameController.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_ageInput.text.length > 0 && int.tryParse(_ageInput.text) != null && int.tryParse(_ageInput.text)! > 7)
+      widget.userToEdit.age = int.tryParse(_ageInput.text);
+    else if(_ageInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if ( _phoneNumberInput.text.length > 2)
+      widget.userToEdit.phoneNumber = _phoneNumberInput.text;
+    else if(_phoneNumberInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_loginInput.text.length > 2)
+      widget.userToEdit.login = _loginInput.text;
+    else if(_loginInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_diseaseInput.text.length > 2)
+      widget.userToEdit.disease = _diseaseInput.text;
+    else if(_diseaseInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if(_passwordInput.text.isNotEmpty){
+      if (_passwordInput.text.length > 3){
+        widget.userToEdit.password = _passwordInput.text;
+      }
+      else{
+        checkPassword = false;
+      }
+    }
+
+    if (_hoursUnderWaterInput.text.length > 0 && int.tryParse(_hoursUnderWaterInput.text) != null)
+      widget.userToEdit.hoursUnderWater = double.tryParse(_hoursUnderWaterInput.text);
+    else if(_hoursUnderWaterInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_roleIdInput.text.length > 0 && int.tryParse(_roleIdInput.text) != null)
+      widget.userToEdit.roleId = int.tryParse(_roleIdInput.text);
+    else if(_roleIdInput.text.isNotEmpty)
+      wrongInput = true;
+
+    if (_maxDepthInput.text.length > 0 && double.tryParse(_maxDepthInput.text) != null)
+    widget.userToEdit.maxDepth = double.tryParse(_maxDepthInput.text);
+    else if(_maxDepthInput.text.isNotEmpty)
+    wrongInput = true;
+
+  }
+
+  var userController = UserController(UserRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +162,7 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
           actions: [
             PopupMenuButton(
               itemBuilder: (BuildContext context) => [
+
                 PopupMenuItem(
                     value: ukrLanguage,
                     child: Text(
@@ -151,7 +171,7 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
                     )),
                 PopupMenuItem(
                   child:
-                      Text(engLanguage, style: TextStyle(color: Colors.white)),
+                  Text(engLanguage, style: TextStyle(color: Colors.white)),
                   value: engLanguage,
                 )
               ],
@@ -169,8 +189,8 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                  return UsersInfoPage(widget.user);
-                }), (route) => false);
+                      return UsersInfoPage(widget.user);
+                    }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
             );
@@ -179,19 +199,19 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
         body: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.indigo,
-              Colors.red,
-            ],
-          )),
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Colors.indigo,
+                  Colors.red,
+                ],
+              )),
           child: Column(
             children: [
               Container(
                 margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
                 child: Text(
-                  "Creating new user",
+                  "Editing user ${widget.userToEdit.id}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                 ),
               ),
@@ -218,9 +238,10 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                    MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   onPressed: () async {
+                    save();
                     if (wrongInput == true) {
                       return showDialog(
                           context: context,
@@ -230,7 +251,7 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
                                   "Data can't be empty or less than 2 liters"),
                             );
                           });
-                    } else if (!checkPassword) {
+                    }else if(!checkPassword){
                       return showDialog(
                           context: context,
                           builder: (context) {
@@ -239,30 +260,25 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
                                   "Passwords should consist more than 3 symbols"),
                             );
                           });
-                    } else {
-                      if (register() == null) {
+                    }
+                    else {
+                      if (widget.userToEdit.id == null) {
+                        print("User not found");
+                      } else if (widget.userToEdit.id != null) {
+                        await userController.updateUserData(widget.userToEdit);
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Passwords should consist more than 3 symbols"),
-                              );
-                            });
-                      } else {
-                        await userController.postUserData(register()!);
-                        return showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("Success"),
+                                    "Success"),
                               );
                             });
                       }
                     }
                   },
                   child: Text(
-                    'Create',
+                    'Save',
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),

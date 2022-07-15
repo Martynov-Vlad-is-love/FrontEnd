@@ -1,33 +1,31 @@
-import 'package:diving/Models/Course.dart';
-import 'package:diving/Pages/CreateNewUserPage.dart';
-import 'package:diving/Pages/EditingUserInfoPage.dart';
 import 'package:diving/Repository/UserCourseRepository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Controllers/UserController.dart';
-import '../Controllers/UserCourseController.dart';
-import '../Models/User.dart';
-import '../Repository/UserRepository.dart';
+import '../../Controllers/UserCourseController.dart';
+import '../../Models/User.dart';
+import '../../Models/UserCourse.dart';
 import 'AdminHomePage.dart';
-import 'HomePage.dart';
+import 'CreateNewUserCoursePage.dart';
+import 'EditingUserCoursesInfoPage.dart';
 
-class UsersInfoPage extends StatefulWidget {
+
+class UserCoursesListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _UsersInfoPageState();
+    return _UserCoursesListPageState();
   }
+
   final User user;
-  UsersInfoPage(this.user);
+
+  UserCoursesListPage(this.user);
 }
 
-class _UsersInfoPageState extends State<UsersInfoPage> {
+class _UserCoursesListPageState extends State<UserCoursesListPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
   var curLanguage = "Українська";
 
   final idController = TextEditingController(text: "");
   final userCourseController = UserCourseController(UserCourseRepository());
-  final userController = UserController(UserRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +38,8 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                      return AdminHomePage(widget.user);
-                    }), (route) => false);
+                  return AdminHomePage(widget.user);
+                }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
             );
@@ -57,7 +55,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                     )),
                 PopupMenuItem(
                   child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
+                      Text(engLanguage, style: TextStyle(color: Colors.white)),
                   value: engLanguage,
                 )
               ],
@@ -83,13 +81,13 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
         body: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
-                ],
-              )),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.indigo,
+              Colors.red,
+            ],
+          )),
           child: Center(
             child: Column(
               children: [
@@ -97,7 +95,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   height: 500,
                   child: SingleChildScrollView(
                     child: FutureBuilder(
-                        future: userController.getUsersList(),
+                        future: userCourseController.getUserCoursesList(),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.data == null) {
                             return Text('Loading...');
@@ -106,38 +104,48 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                               shrinkWrap: true,
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, i) {
-                                final user = snapshot.data[i] as User;
+                                final userCourse = snapshot.data[i] as UserCourse;
                                 return Card(
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: (){
+                                      onTap: () {
                                         Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (BuildContext context) {
-                                              return EditingUserInfoPage(widget.user,user);
-                                            }), (route) => false);
+                                            MaterialPageRoute(builder:
+                                                (BuildContext context) {
+                                          return EditingUserCoursesInfoPage(
+                                              widget.user, userCourse);
+                                        }), (route) => false);
                                       },
                                       child: ListTile(
                                           title: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  child: Text('${user.id}'),
-                                                ),
-                                              ),
-                                              Container(
-                                                child: Text('${user.login}'),
-                                              ),
-                                              Expanded(
-                                                child: Container(
-                                                  child: Text('${user.roleId.toString()}'),
-                                                  alignment: Alignment.centerRight,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child:
+                                                  Text('Id: ${userCourse.id}'),
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                                'Course id: ${userCourse.courseId}'),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child: Text(
+                                                  'User id: ${userCourse.userId}'),
+                                              alignment: Alignment.centerRight,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                  'Total price: ${userCourse.totalPrice}'),
+                                            ),
                                           )
-                                      ),
-
+                                        ],
+                                      )),
                                     ),
                                   ),
                                 );
@@ -153,15 +161,19 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   margin: EdgeInsetsDirectional.fromSTEB(100, 35, 100, 0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
                     ),
-                    onPressed: () async{
+                    onPressed: () async {
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (BuildContext context) {
-                            return CreateNewUserPage(widget.user);
-                          }), (route) => false);
+                        return CreateNewUserCoursePage(widget.user);
+                      }), (route) => false);
                     },
-                    child: Text('Create new user',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text(
+                      'Create new record',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
                 ),
                 Container(
@@ -170,28 +182,38 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   margin: EdgeInsetsDirectional.fromSTEB(100, 35, 100, 0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
                     ),
-                    onPressed: () async{
-                      showDialog(context: context,
+                    onPressed: () async {
+                      showDialog(
+                          context: context,
                           builder: (context) => SimpleDialog(
-                            title: Text("Do you really want to delete this user?"),
-                            contentPadding: const EdgeInsets.all(20.0),
-                            children: [
-                              TextFormField(controller: idController),
-                              TextButton(onPressed: () async{
-                                await userCourseController.deleteUserCoursesByUserId(int.parse(idController.text));
-                                await userController.deleteUser(int.parse(idController.text));
-                                Navigator.of(context).pop();
-                              }, child: const Text("Delete")),
-                              TextButton(onPressed: (){
-                                Navigator.of(context).pop();
-                              }, child: const Text("Cancel"))
-                            ],
-                          )
-                      );
+                                title: Text(
+                                    "Do you really want to delete this record?"),
+                                contentPadding: const EdgeInsets.all(20.0),
+                                children: [
+                                  TextFormField(controller: idController),
+                                  TextButton(
+                                      onPressed: () async {
+                                        await userCourseController
+                                            .deleteUserCourse(
+                                                int.parse(idController.text));
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Delete")),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Cancel"))
+                                ],
+                              ));
                     },
-                    child: Text('Delete user by id',style: TextStyle(color: Colors.white, fontSize: 15),),
+                    child: Text(
+                      'Delete record by id',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
                 )
               ],
@@ -202,11 +224,7 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = [
-    'Trainee',
-    'Intermediate',
-    'Pro'
-  ];
+  List<String> searchTerms = ['Trainee', 'Intermediate', 'Pro'];
 
   @override
   List<Widget>? buildActions(BuildContext context) {

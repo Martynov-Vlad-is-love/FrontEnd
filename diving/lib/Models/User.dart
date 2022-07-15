@@ -46,6 +46,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{
+      "id": this.id,
       "login": this.login,
       "password": this.password,
       "name": this.name,

@@ -1,12 +1,11 @@
 import 'package:diving/Pages/LoginScreen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Models/User.dart';
+import '../../Models/User.dart';
+import '../AboutUsPage.dart';
+import '../ProfilePage.dart';
 import 'CoursesPage.dart';
-import 'ProfilePage.dart';
-import 'AboutUsPage.dart';
-import 'RegistrationScreen.dart';
+import 'OwnCoursesPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -198,11 +197,17 @@ class _HomePageState extends State<HomePage> {
                         )),
                         child: Center(
                             child: TextButton(
-                                onPressed: () {},
+                                onPressed: () async{
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return OwnCoursesPage(widget.user);
+                                          }), (route) => false);
+                                },
                                 style: TextButton.styleFrom(
                                     fixedSize: Size(500, 500)),
                                 child: Text(
-                                  'Contacts',
+                                  'Purchased courses',
                                   style: TextStyle(
                                       fontSize: 40,
                                       fontWeight: FontWeight.w700,

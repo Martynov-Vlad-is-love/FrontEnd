@@ -1,15 +1,12 @@
-import 'package:diving/Repository/CourseRepository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Controllers/UserController.dart';
-import '../Models/Course.dart';
 import '../Models/User.dart';
 import '../Repository/UserRepository.dart';
-import 'HomePage.dart';
+import 'AdminPages/AdminHomePage.dart';
+import 'UserPages/HomePage.dart';
 
-
-class AboutUsPage extends StatefulWidget{
+class AboutUsPage extends StatefulWidget {
   @override
   _AboutUsPage createState() => _AboutUsPage();
   final User user;
@@ -17,7 +14,7 @@ class AboutUsPage extends StatefulWidget{
   AboutUsPage(this.user);
 }
 
-class _AboutUsPage extends State<AboutUsPage>{
+class _AboutUsPage extends State<AboutUsPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
 
@@ -29,8 +26,6 @@ class _AboutUsPage extends State<AboutUsPage>{
     } else
       return engLanguage;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +46,7 @@ class _AboutUsPage extends State<AboutUsPage>{
                     )),
                 PopupMenuItem(
                   child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
+                      Text(engLanguage, style: TextStyle(color: Colors.white)),
                   value: engLanguage,
                 )
               ],
@@ -69,8 +64,11 @@ class _AboutUsPage extends State<AboutUsPage>{
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                      return HomePage(widget.user);
-                    }), (route) => false);
+                  if (widget.user.roleId == 2)
+                    return AdminHomePage(widget.user);
+                  else
+                    return HomePage(widget.user);
+                }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
             );
@@ -79,13 +77,13 @@ class _AboutUsPage extends State<AboutUsPage>{
         body: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
-                ],
-              )),
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.indigo,
+              Colors.red,
+            ],
+          )),
           child: Center(
             child: Column(
               children: [
@@ -96,16 +94,15 @@ class _AboutUsPage extends State<AboutUsPage>{
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                   ),
                 ),
-
                 Container(
-                  width: 250,
-                  height: 35,
+                  width: 1000,
+                  height: 180,
                   margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                  padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                  child: Center(
-
-                      child: Text(
-                          'Ваш час під водою: ${widget.user.hoursUnderWater} годин')),
+                  padding: EdgeInsetsDirectional.fromSTEB(50, 30, 50, 30),
+                  child: Text(
+                    "         Hello, my name is Vladislav, I'm a student at the Kharkov National University of Radio Electronics, this project is my course work. My e-mail: vladyslav.martynov1@nure.ua.",
+                    style: TextStyle(fontSize: 30),
+                  ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.redAccent,
@@ -118,29 +115,9 @@ class _AboutUsPage extends State<AboutUsPage>{
                         ),
                       ]),
                 ),
-                Container(
-                  height: 40,
-                  width: 180,
-                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
-                    ),
-                    onPressed: () async {
-
-                    },
-                    child: Text(
-                      'Save',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
         ));
   }
-
-
 }

@@ -1,41 +1,38 @@
-import 'package:diving/Controllers/UserController.dart';
-import 'package:diving/Repository/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Models/User.dart';
-import 'UsersInfoPage.dart';
+import '../../Controllers/UserCourseController.dart';
+import '../../Models/User.dart';
+import '../../Models/UserCourse.dart';
+import '../../Repository/UserCourseRepository.dart';
 
-class EditingUserInfoPage extends StatefulWidget {
+import 'UserCoursesListPage.dart';
+
+class EditingUserCoursesInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _EditingUserInfoPageState();
+    return _EditingUserCoursesInfoPageState();
   }
 
   final User user;
-  final User userToEdit;
+  final UserCourse userCourseToEdit;
 
-  EditingUserInfoPage(this.user, this.userToEdit);
+  EditingUserCoursesInfoPage(this.user, this.userCourseToEdit);
 
 }
 
-class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
+class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage> {
   static const engLanguage = "English";
   static const ukrLanguage = "Українська";
 
-  final _roleIdInput = TextEditingController(text: "");
-  final _nameInput = TextEditingController(text: "");
-  final _diseaseInput = TextEditingController(text: "");
-  final _surnameController = TextEditingController(text: "");
-  final _phoneNumberInput = TextEditingController(text: "");
-  final _ageInput = TextEditingController(text: "");
-  final _passwordInput = TextEditingController(text: "");
-  final _loginInput = TextEditingController(text: "");
-  final _maxDepthInput = TextEditingController(text: "");
-  final _hoursUnderWaterInput = TextEditingController(text: "");
+  final _userIdInputController = TextEditingController(text: "");
+  final _courseIdInputController = TextEditingController(text: "");
+  final _availableInputController = TextEditingController(text: "");
+  final _completedInputController = TextEditingController(text: "");
+  final _promoCodeIdInputController = TextEditingController(text: "");
+  final _totalPriceInputController = TextEditingController(text: "");
 
   bool wrongInput = false;
-  bool checkPassword = true;
 
   Widget inputInformationComponent(
       String text, TextEditingController input, String label) {
@@ -76,65 +73,55 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent(widget.userToEdit.login ?? "", _loginInput, "Login"),
-    inputInformationComponent(widget.userToEdit.password ?? "", _passwordInput, "Password"),
-    inputInformationComponent(widget.userToEdit.maxDepth.toString(), _maxDepthInput, "Max depth"),
-    inputInformationComponent(widget.userToEdit.phoneNumber ?? "", _phoneNumberInput, "Phone number"),
-    inputInformationComponent(widget.userToEdit.roleId.toString(), _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
-
+    inputInformationComponent(widget.userCourseToEdit.userId.toString(), _userIdInputController, "User id"),
+    inputInformationComponent(widget.userCourseToEdit.courseId.toString(), _courseIdInputController, "Course id"),
+    inputInformationComponent(widget.userCourseToEdit.available.toString(), _availableInputController, "Is available"),
   ];
-
   List<Widget> userInformationBar2() => [
-    inputInformationComponent(widget.userToEdit.name ?? "", _nameInput, "Name"),
-    inputInformationComponent(widget.userToEdit.surname ?? "", _surnameController, "Surname"),
-    inputInformationComponent(widget.userToEdit.age.toString(), _ageInput, "Age"),
-    inputInformationComponent(widget.userToEdit.disease ?? "", _diseaseInput, "Disease"),
-    inputInformationComponent(widget.userToEdit.hoursUnderWater.toString(), _hoursUnderWaterInput, "Hours under water"),
+    inputInformationComponent(widget.userCourseToEdit.completed.toString(), _completedInputController, "Completed"),
+    inputInformationComponent(widget.userCourseToEdit.promoCodeId.toString(), _promoCodeIdInputController, "Promo code"),
+    inputInformationComponent(widget.userCourseToEdit.totalPrice.toString(), _totalPriceInputController, "Total price"),
   ];
 
   void save() {
-    if (_nameInput.text.length > 2)
-      widget.userToEdit.name = _nameInput.text;
-    else if(_nameInput.text.isNotEmpty)
+
+    if (_userIdInputController.text.length > 0 && int.tryParse(_userIdInputController.text) != null)
+      widget.userCourseToEdit.userId = int.tryParse(_userIdInputController.text);
+    else if(_userIdInputController.text.isNotEmpty)
       wrongInput = true;
 
-    if (_surnameController.text.length > 2)
-      widget.userToEdit.surname = _surnameController.text;
-    else if(_surnameController.text.isNotEmpty)
+    if (_courseIdInputController.text.length > 0 && int.tryParse(_courseIdInputController.text) != null)
+      widget.userCourseToEdit.courseId = int.tryParse(_courseIdInputController.text);
+    else if(_courseIdInputController.text.isNotEmpty)
       wrongInput = true;
 
-    if (_ageInput.text.length > 0 && int.tryParse(_ageInput.text) != null && int.tryParse(_ageInput.text)! > 7)
-      widget.userToEdit.age = int.tryParse(_ageInput.text);
-    else if(_ageInput.text.isNotEmpty)
+    if (_availableInputController.text.length > 0)
+      if(_availableInputController.text == "true")
+        widget.userCourseToEdit.available = true;
+      else if(_availableInputController.text == "false")
+        widget.userCourseToEdit.available = false;
+      else
+        wrongInput = true;
+    else if(_availableInputController.text.isNotEmpty)
       wrongInput = true;
 
-    if ( _phoneNumberInput.text.length > 2)
-      widget.userToEdit.phoneNumber = _phoneNumberInput.text;
-    else if(_phoneNumberInput.text.isNotEmpty)
+    if (_completedInputController.text.length > 0 && int.tryParse(_completedInputController.text) != null)
+      widget.userCourseToEdit.completed = int.tryParse(_completedInputController.text);
+    else if(_completedInputController.text.isNotEmpty)
       wrongInput = true;
 
-    if (_loginInput.text.length > 2)
-      widget.userToEdit.login = _loginInput.text;
-    else if(_loginInput.text.isNotEmpty)
+    if (_promoCodeIdInputController.text.length > 0 && int.tryParse(_promoCodeIdInputController.text) != null)
+      widget.userCourseToEdit.promoCodeId = int.tryParse(_promoCodeIdInputController.text);
+    else if(_promoCodeIdInputController.text.isNotEmpty)
       wrongInput = true;
 
-    if (_diseaseInput.text.length > 2)
-      widget.userToEdit.disease = _diseaseInput.text;
-    else if(_diseaseInput.text.isNotEmpty)
+    if (_totalPriceInputController.text.length > 0 && double.tryParse(_totalPriceInputController.text) != null)
+      widget.userCourseToEdit.totalPrice = double.tryParse(_totalPriceInputController.text);
+    else if(_totalPriceInputController.text.isNotEmpty)
       wrongInput = true;
-
-    if(_passwordInput.text.isNotEmpty){
-      if (_passwordInput.text.length > 3){
-        widget.userToEdit.password = _passwordInput.text;
-      }
-      else{
-        checkPassword = false;
-      }
-    }
-
   }
 
-  var userController = UserController(UserRepository());
+  var userCourseController = UserCourseController(UserCourseRepository());
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +161,7 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (BuildContext context) {
-                      return UsersInfoPage(widget.user);
+                      return UserCoursesListPage(widget.user);
                     }), (route) => false);
               },
               icon: const Icon(Icons.arrow_back),
@@ -196,7 +183,7 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
               Container(
                 margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
                 child: Text(
-                  "Editing user ${widget.userToEdit.id}",
+                  "Editing record ${widget.userCourseToEdit.id}",
                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                 ),
               ),
@@ -211,8 +198,9 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
                   ),
                   Container(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: userInformationBar2()),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: userInformationBar2(),
+                    ),
                   ),
                 ],
               ),
@@ -233,25 +221,15 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
                           builder: (context) {
                             return AlertDialog(
                               title: Text(
-                                  "Data can't be empty or less than 2 liters"),
-                            );
-                          });
-                    }else if(!checkPassword){
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Passwords should consist more than 3 symbols"),
+                                  "Some data was wrong"),
                             );
                           });
                     }
                     else {
-                      if (widget.userToEdit.id == null) {
-                        print("User not found");
-                      } else if (widget.userToEdit.id != null) {
-                        save();
-                        await userController.updateUserData(widget.userToEdit);
+                      if (widget.userCourseToEdit.id == null) {
+                        print("Promo code not found");
+                      } else if (widget.userCourseToEdit.id != null) {
+                        await userCourseController.updateUserCourseData(widget.userCourseToEdit);
                         return showDialog(
                             context: context,
                             builder: (context) {
