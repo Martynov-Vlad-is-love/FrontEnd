@@ -1,5 +1,7 @@
 import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
+import 'package:diving/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -76,20 +78,20 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent(widget.userToEdit.login ?? "", _loginInput, "Login"),
-    inputInformationComponent(widget.userToEdit.password ?? "", _passwordInput, "Password"),
-    inputInformationComponent(widget.userToEdit.maxDepth.toString(), _maxDepthInput, "Max depth"),
-    inputInformationComponent(widget.userToEdit.phoneNumber ?? "", _phoneNumberInput, "Phone number"),
-    inputInformationComponent(widget.userToEdit.roleId.toString(), _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
+    inputInformationComponent(widget.userToEdit.login ?? "", _loginInput, LocaleKeys.login.tr()),
+    inputInformationComponent(widget.userToEdit.password ?? "", _passwordInput, LocaleKeys.password.tr()),
+    inputInformationComponent(widget.userToEdit.maxDepth.toString(), _maxDepthInput, LocaleKeys.max_depth.tr()),
+    inputInformationComponent(widget.userToEdit.phoneNumber ?? "", _phoneNumberInput, LocaleKeys.phone_number.tr()),
+    inputInformationComponent(widget.userToEdit.roleId.toString(), _roleIdInput, LocaleKeys.role_id_help.tr()),
 
   ];
 
   List<Widget> userInformationBar2() => [
-    inputInformationComponent(widget.userToEdit.name ?? "", _nameInput, "Name"),
-    inputInformationComponent(widget.userToEdit.surname ?? "", _surnameController, "Surname"),
-    inputInformationComponent(widget.userToEdit.age.toString(), _ageInput, "Age"),
-    inputInformationComponent(widget.userToEdit.disease ?? "", _diseaseInput, "Disease"),
-    inputInformationComponent(widget.userToEdit.hoursUnderWater.toString(), _hoursUnderWaterInput, "Hours under water"),
+    inputInformationComponent(widget.userToEdit.name ?? "", _nameInput, LocaleKeys.name.tr()),
+    inputInformationComponent(widget.userToEdit.surname ?? "", _surnameController, LocaleKeys.surname.tr()),
+    inputInformationComponent(widget.userToEdit.age.toString(), _ageInput, LocaleKeys.age.tr()),
+    inputInformationComponent(widget.userToEdit.disease ?? "", _diseaseInput, LocaleKeys.disease.tr()),
+    inputInformationComponent(widget.userToEdit.hoursUnderWater.toString(), _hoursUnderWaterInput, LocaleKeys.hours_under_water.tr()),
   ];
 
   void save() {
@@ -154,137 +156,145 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
   @override
   Widget build(BuildContext context) {
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
 
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return UsersInfoPage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('uk'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
+                  )
                 ],
-              )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Editing user ${widget.userToEdit.id}",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return UsersInfoPage(widget.user);
+                      }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    plural(LocaleKeys.editing_user_, widget.userToEdit.id!),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
-                    ),
-                  ),
-                  Container(
-                    child: Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: userInformationBar2()),
-                  ),
-                ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
-                  ),
-                  onPressed: () async {
-                    save();
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Data can't be empty or less than 2 liters"),
-                            );
-                          });
-                    }else if(!checkPassword){
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Passwords should consist more than 3 symbols"),
-                            );
-                          });
-                    }
-                    else {
-                      if (widget.userToEdit.id == null) {
-                        print("User not found");
-                      } else if (widget.userToEdit.id != null) {
-                        await userController.updateUserData(widget.userToEdit);
+                        children: userInformationBar1(),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: userInformationBar2()),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      save();
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Success"),
+                                    "Data can't be empty or less than 2 liters"),
+                              );
+                            });
+                      }else if(!checkPassword){
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                    "Passwords should consist more than 3 symbols"),
                               );
                             });
                       }
-                    }
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                      else {
+                        if (widget.userToEdit.id == null) {
+                          print("User not found");
+                        } else if (widget.userToEdit.id != null) {
+                          await userController.updateUserData(widget.userToEdit);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      "Success"),
+                                );
+                              });
+                        }
+                      }
+                    },
+                    child: Text(
+                      'Save',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

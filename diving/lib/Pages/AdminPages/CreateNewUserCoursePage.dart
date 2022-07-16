@@ -1,10 +1,12 @@
 import 'package:diving/Models/UserCourse.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Controllers/UserCourseController.dart';
 import '../../Models/User.dart';
 import '../../Repository/UserCourseRepository.dart';
+import '../../generated/locale_keys.g.dart';
 import 'UserCoursesListPage.dart';
 
 
@@ -109,144 +111,152 @@ class _CreateNewUserCoursePageState extends State<CreateNewUserCoursePage> {
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent("", _userIdInputController, "User id"),
-    inputInformationComponent("", _courseIdInputController, "Course id"),
-    inputInformationComponent("", _availableInputController, "Available"),
+    inputInformationComponent("", _userIdInputController, LocaleKeys.user_id.tr()),
+    inputInformationComponent("", _courseIdInputController, LocaleKeys.course_id.tr()),
+    inputInformationComponent("", _availableInputController, LocaleKeys.available.tr()),
   ];
   List<Widget> userInformationBar2() => [
-    inputInformationComponent("", _completedInputController, "Completed"),
-    inputInformationComponent("", _promoCodeIdInputController, "Promo code id"),
-    inputInformationComponent("", _totalPriceInputController, "Total price"),
+    inputInformationComponent("", _completedInputController, LocaleKeys.completed.tr()),
+    inputInformationComponent("", _promoCodeIdInputController, LocaleKeys.promo_code_id.tr()),
+    inputInformationComponent("", _totalPriceInputController, LocaleKeys.total_price.tr()),
   ];
 
   @override
   Widget build(BuildContext context) {
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return UserCoursesListPage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
-                ],
-              )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Creating new record",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar2(),
-                    ),
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
                   )
                 ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return UserCoursesListPage(widget.user);
+                      }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    LocaleKeys.creating_new_record.tr(),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                   ),
-                  onPressed: () async {
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Some data is wrong"),
-                            );
-                          });
-                    } else {
-                      if (createNewUserCourse() == null) {
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar1(),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar2(),
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: Text("Wrong input data"),
+                                title: Text(
+                                    LocaleKeys.some_data_is_wrong.tr()),
                               );
                             });
                       } else {
-                        await userCourseController.postUserCourse(createNewUserCourse()!);
-                        return showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("Success"),
-                              );
-                            });
+                        if (createNewUserCourse() == null) {
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(LocaleKeys.wrong_input_data.tr()),
+                                );
+                              });
+                        } else {
+                          await userCourseController.postUserCourse(createNewUserCourse()!);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(LocaleKeys.success.tr()),
+                                );
+                              });
+                        }
                       }
-                    }
-                  },
-                  child: Text(
-                    'Create',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                    },
+                    child: Text(
+                      LocaleKeys.create.tr(),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

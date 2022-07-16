@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:diving/Controllers/UserCourseController.dart';
 import 'package:diving/Repository/CourseRepository.dart';
 import 'package:diving/Repository/UserCourseRepository.dart';
+import 'package:diving/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:typed_data';
@@ -31,56 +33,6 @@ class _OwnCoursesPageState extends State<OwnCoursesPage> {
 
   final courseController = CourseController(CourseRepository());
   final userCourseController = UserCourseController(UserCourseRepository());
-
-  final pdfFile = pw.Document();
-
-  Future savePdf() async {
-    try {
-      Directory directory =
-      Directory("D:/Android_Studio_repos/FrontEnd/certificate.pdf");
-
-      String documentPath = directory.path;
-
-      File file = File("$documentPath");
-      print(file.path.toString());
-
-      file.writeAsBytesSync(List.from(await pdfFile.save()));
-    } catch (ex) {
-      print(ex);
-    }
-  }
-
-  writeOnPdf() async {
-    var data = await rootBundle.load("Montserrat-Italic-VariableFont_wght.ttf");
-    var myFont = pw.Font.ttf(data);
-    pdfFile.addPage(pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.all(32),
-        build: (pw.Context context) {
-          return <pw.Widget>[
-            pw.Header(
-                level: 0,
-                child:
-                pw.Text("Test attempt", style: pw.TextStyle(font: myFont))),
-            pw.Paragraph(
-                text: "First time certificate",
-                style: pw.TextStyle(font: myFont)),
-            pw.Paragraph(
-                text: "Second time certificate",
-                style: pw.TextStyle(font: myFont)),
-            pw.Header(
-              level: 1,
-              child: pw.Text("laalal", style: pw.TextStyle(font: myFont)),
-            ),
-            pw.Paragraph(
-                text: "Third time certificate",
-                style: pw.TextStyle(font: myFont)),
-            pw.Paragraph(
-                text: "Fourth time certificate",
-                style: pw.TextStyle(font: myFont)),
-          ];
-        }));
-  }
 
   final pdf = pw.Document();
 
@@ -126,172 +78,172 @@ class _OwnCoursesPageState extends State<OwnCoursesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return HomePage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) =>
-              [
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            ),
-            IconButton(
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
                 onPressed: () {
-                  showSearch(
-                    context: context,
-                    delegate: CustomSearchDelegate(),
-                  );
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return HomePage(widget.user);
+                      }), (route) => false);
                 },
-                icon: const Icon(Icons.search))
-          ],
-          title: const Text('ProDiver'),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) =>
+                [
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
+                  )
                 ],
-              )),
-          child: Center(
-            child: Column(
-              children: [
-                FutureBuilder(
-                    future: userCourseController
-                        .getUserCourseDataByUserId(widget.user.id!),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.data == null) {
-                        return Text('Loading...');
-                      } else {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, i) {
-                            final userCourse = snapshot.data[i] as UserCourse;
-                            String courseName = "";
-                            if (userCourse.courseId == 2) {
-                              courseName = "Trainee";
-                            } else if (userCourse.courseId == 3) {
-                              courseName = "Intermediate";
-                            } else if (userCourse.courseId == 4) {
-                              courseName = "Pro";
-                            }
-
-                            return Card(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    if (userCourse.completed! >= 100) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              SimpleDialog(
-                                                title: Text(
-                                                    "Do you already complete this course. Do you want to take certificate?"),
-                                                contentPadding:
-                                                const EdgeInsets.all(20.0),
-                                                children: [
-                                                  TextButton(
-                                                      onPressed: () async {
-                                                        await createPDF(
-                                                            widget.user.name!,
-                                                            widget
-                                                                .user.surname!,
-                                                            courseName);
-                                                        // final pdfFile = await PdfApi.generatePdf(widget.user.name!, widget.user.surname!, courseName);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: const Text("Yes")),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: const Text("No"))
-                                                ],
-                                              ));
-                                    } else {
-                                      userCourse.completed =
-                                      (userCourse.completed! + 10);
-                                      await userCourseController
-                                          .updateUserCourseData(userCourse);
-                                    }
-                                  },
-                                  child: ListTile(
-                                      title: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              child: Text(
-                                                  'Course: $courseName'),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                                '${userCourse.completed}%'),
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              child: Text(
-                                                  "Total price ${userCourse
-                                                      .totalPrice}"),
-                                              alignment: Alignment.centerRight,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              child: Text('Course bought'),
-                                              alignment: Alignment.centerRight,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    }),
-              ],
-            ),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              ),
+              IconButton(
+                  onPressed: () {
+                    showSearch(
+                      context: context,
+                      delegate: CustomSearchDelegate(),
+                    );
+                  },
+                  icon: const Icon(Icons.search))
+            ],
+            title: const Text('ProDiver'),
           ),
-        ));
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Center(
+              child: Column(
+                children: [
+                  FutureBuilder(
+                      future: userCourseController
+                          .getUserCourseDataByUserId(widget.user.id!),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.data == null) {
+                          return Text(LocaleKeys.loading.tr());
+                        } else {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, i) {
+                              final userCourse = snapshot.data[i] as UserCourse;
+                              String courseName = "";
+                              if (userCourse.courseId == 2) {
+                                courseName = "Trainee";
+                              } else if (userCourse.courseId == 3) {
+                                courseName = "Intermediate";
+                              } else if (userCourse.courseId == 4) {
+                                courseName = "Pro";
+                              }
+
+                              return Card(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      if (userCourse.completed! >= 100) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) =>
+                                                SimpleDialog(
+                                                  title: Text(LocaleKeys.you_already_complete_this_course_do_you_want_to_take_certificate.tr()),
+                                                  contentPadding:
+                                                  const EdgeInsets.all(20.0),
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          await createPDF(
+                                                              widget.user.name!,
+                                                              widget.user.surname!,
+                                                              courseName);
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: Text(LocaleKeys.yes.tr())),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text(LocaleKeys.no.tr()))
+                                                  ],
+                                                ));
+                                      } else {
+                                        userCourse.completed =
+                                        (userCourse.completed! + 10);
+                                        await userCourseController
+                                            .updateUserCourseData(userCourse);
+                                      }
+                                    },
+                                    child: ListTile(
+                                        title: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                child: Text(plural(LocaleKeys.course_name_, 0, namedArgs: {"courseName": courseName})),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(plural(LocaleKeys.completed_, userCourse.completed!)),
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                child: Text(plural(LocaleKeys.total_price_, userCourse.totalPrice!)),
+                                                alignment: Alignment.centerRight,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                child: Text(LocaleKeys.course_bought.tr()),
+                                                alignment: Alignment.centerRight,
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      }),
+                ],
+              ),
+            ),
+          )),
+    );
   }
 }
 

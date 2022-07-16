@@ -1,5 +1,6 @@
 import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ import '../../Controllers/CourseController.dart';
 import '../../Models/Course.dart';
 import '../../Models/User.dart';
 import '../../Repository/CourseRepository.dart';
+import '../../generated/locale_keys.g.dart';
 import 'AdminCoursesPage.dart';
 
 class EditingCourseInfoPage extends StatefulWidget {
@@ -74,13 +76,13 @@ class _EditingCourseInfoPageState extends State<EditingCourseInfoPage> {
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent(widget.courseToEdit.courseName ?? "", _courseNameInputController, "Course name"),
-    inputInformationComponent(widget.courseToEdit.description ?? "", _descriptionInputController, "Description"),
+    inputInformationComponent(widget.courseToEdit.courseName ?? "", _courseNameInputController, LocaleKeys.course_name.tr()),
+    inputInformationComponent(widget.courseToEdit.description ?? "", _descriptionInputController, LocaleKeys.description.tr()),
   ];
 
   List<Widget> userInformationBar2() => [
-    inputInformationComponent(widget.courseToEdit.cost.toString(), _costInputController, "Course Cost"),
-    inputInformationComponent(widget.courseToEdit.minHoursUnderWater.toString(), _minHoursUnderWaterInputController, "Minimal hours under water"),
+    inputInformationComponent(widget.courseToEdit.cost.toString(), _costInputController, LocaleKeys.course_cost.tr()),
+    inputInformationComponent(widget.courseToEdit.minHoursUnderWater.toString(), _minHoursUnderWaterInputController, LocaleKeys.minimal_hours_under_water.tr()),
   ];
 
   void save() {
@@ -122,190 +124,198 @@ class _EditingCourseInfoPageState extends State<EditingCourseInfoPage> {
   Widget build(BuildContext context) {
     imagePath = widget.courseToEdit.image!;
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
 
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return AdminCoursesInfoPage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
-                ],
-              )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Editing course ${widget.courseToEdit.id}",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
-                ),
-              ),
-              SizedBox(height: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 200,
-                    width: 200,
-                    child: Image.network(widget.courseToEdit.image!, fit: BoxFit.cover,),
-
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 50,
-                          width: 300,
-                          margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
-                          padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "",
-                              border: InputBorder.none,
-                              filled: false,
-                              labelText: "Image url",
-                              labelStyle: TextStyle(fontSize: 16, height: 50),
-                            ),
-                            controller: _imageInputController,
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(100)),
-                              color: Colors.redAccent,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54.withOpacity(0.5),
-                                  spreadRadius: 3,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ]),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
-                          ),
-                          child: Text(
-                            "Set image",
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                          onPressed: () {
-                            changeImage(_imageInputController.text);
-                          },
-                        ),
-                      ],
-                    ),
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
                   )
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return AdminCoursesInfoPage(widget.user);
+                      }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    plural(LocaleKeys.editing_course_, widget.courseToEdit.id!),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                  ),
+                ),
+                SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 200,
+                      width: 200,
+                      child: Image.network(widget.courseToEdit.image!, fit: BoxFit.cover,),
+
                     ),
-                  ),
-                  Container(
-                    child: Column(
+                    Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 50,
+                            width: 300,
+                            margin: EdgeInsetsDirectional.fromSTEB(50, 40, 50, 0),
+                            padding: EdgeInsetsDirectional.fromSTEB(20, 2, 10, 5),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: "",
+                                border: InputBorder.none,
+                                filled: false,
+                                labelText: LocaleKeys.image_url.tr(),
+                                labelStyle: TextStyle(fontSize: 16, height: 50),
+                              ),
+                              controller: _imageInputController,
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                                color: Colors.redAccent,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black54.withOpacity(0.5),
+                                    spreadRadius: 3,
+                                    blurRadius: 5,
+                                    offset: Offset(
+                                        0, 1), // changes position of shadow
+                                  ),
+                                ]),
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                            ),
+                            child: Text(
+                              LocaleKeys.set_image.tr(),
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                            onPressed: () {
+                              changeImage(_imageInputController.text);
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: userInformationBar2()),
-                  ),
-                ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
-                  ),
-                  onPressed: () async {
-                    save();
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Data can't be empty or less than 2 liters"),
-                            );
-                          });
-                    }
-                    else {
-                      if (widget.courseToEdit.id == null) {
-                        print("Course not found");
-                      } else if (widget.courseToEdit.id != null) {
-                        save();
-                        await courseController.updateCourseData(widget.courseToEdit);
+                        children: userInformationBar1(),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: userInformationBar2()),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      save();
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Success"),
+                                    LocaleKeys.data_cant_be_empty_or_less_than_2_liters.tr()),
                               );
                             });
                       }
-                    }
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                      else {
+                        if (widget.courseToEdit.id == null) {
+                          print(LocaleKeys.course_not_found.tr());
+                        } else if (widget.courseToEdit.id != null) {
+                          save();
+                          await courseController.updateCourseData(widget.courseToEdit);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      LocaleKeys.success.tr()),
+                                );
+                              });
+                        }
+                      }
+                    },
+                    child: Text(
+                      LocaleKeys.save.tr(),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

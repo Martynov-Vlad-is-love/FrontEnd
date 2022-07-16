@@ -1,9 +1,11 @@
 import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Repository/UserRepository.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../Models/User.dart';
+import '../../generated/locale_keys.g.dart';
 import 'UsersInfoPage.dart';
 
 class CreateNewUserPage extends StatefulWidget {
@@ -117,158 +119,166 @@ class _CreateNewUserPageState extends State<CreateNewUserPage> {
   }
 
   List<Widget> userInformationBar1() => [
-        inputInformationComponent("", _loginInput, "Login"),
-        inputInformationComponent("", _passwordInput, "Password"),
-        inputInformationComponent("", _maxDepthInput, "Max depth"),
-        inputInformationComponent("", _phoneNumberInput, "Phone number"),
-        inputInformationComponent("", _roleIdInput, "Role Id (0 = User| 2 = Admin)"),
+        inputInformationComponent("", _loginInput, LocaleKeys.login.tr()),
+        inputInformationComponent("", _passwordInput, LocaleKeys.password.tr()),
+        inputInformationComponent("", _maxDepthInput, LocaleKeys.max_depth.tr()),
+        inputInformationComponent("", _phoneNumberInput, LocaleKeys.phone_number.tr()),
+        inputInformationComponent("", _roleIdInput, LocaleKeys.role_id_help.tr()),
       ];
 
   List<Widget> userInformationBar2() => [
-        inputInformationComponent("", _nameInput, "Name"),
-        inputInformationComponent("", _surnameController, "Surname"),
-        inputInformationComponent("", _ageInput, "Age"),
-        inputInformationComponent("", _diseaseInput, "Disease"),
-        inputInformationComponent("", _hoursUnderWaterInput, "Hours under water"),
+        inputInformationComponent("", _nameInput, LocaleKeys.name.tr()),
+        inputInformationComponent("", _surnameController, LocaleKeys.surname.tr()),
+        inputInformationComponent("", _ageInput, LocaleKeys.age.tr()),
+        inputInformationComponent("", _diseaseInput, LocaleKeys.disease.tr()),
+        inputInformationComponent("", _hoursUnderWaterInput, LocaleKeys.hours_under_water.tr()),
       ];
 
   @override
   Widget build(BuildContext context) {
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                      Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return UsersInfoPage(widget.user);
-                }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Colors.indigo,
-              Colors.red,
-            ],
-          )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Creating new user",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: userInformationBar2()),
-                  ),
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                        Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
+                  )
                 ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return UsersInfoPage(widget.user);
+                  }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Colors.indigo,
+                Colors.red,
+              ],
+            )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    LocaleKeys.creating_new_user.tr(),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
                   ),
-                  onPressed: () async {
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Data can't be empty or less than 2 liters"),
-                            );
-                          });
-                    } else if (!checkPassword) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Passwords should consist more than 3 symbols"),
-                            );
-                          });
-                    } else {
-                      if (register() == null) {
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar1(),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: userInformationBar2()),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Passwords should consist more than 3 symbols"),
+                                    LocaleKeys.data_cant_be_empty_or_less_than_2_liters.tr()),
                               );
                             });
-                      } else {
-                        await userController.postUserData(register()!);
+                      } else if (!checkPassword) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: Text("Success"),
+                                title: Text(
+                                    LocaleKeys.data_cant_be_empty_or_less_than_3_liters.tr()),
                               );
                             });
+                      } else {
+                        if (register() == null) {
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      LocaleKeys.passwords_should_consist_more_than_3_symbols.tr()),
+                                );
+                              });
+                        } else {
+                          await userController.postUserData(register()!);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(LocaleKeys.success.tr()),
+                                );
+                              });
+                        }
                       }
-                    }
-                  },
-                  child: Text(
-                    'Create',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                    },
+                    child: Text(
+                      LocaleKeys.create.tr(),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:diving/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -73,14 +75,14 @@ class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage>
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent(widget.userCourseToEdit.userId.toString(), _userIdInputController, "User id"),
-    inputInformationComponent(widget.userCourseToEdit.courseId.toString(), _courseIdInputController, "Course id"),
-    inputInformationComponent(widget.userCourseToEdit.available.toString(), _availableInputController, "Is available"),
+    inputInformationComponent(widget.userCourseToEdit.userId.toString(), _userIdInputController, LocaleKeys.user_id.tr()),
+    inputInformationComponent(widget.userCourseToEdit.courseId.toString(), _courseIdInputController, LocaleKeys.course_id.tr()),
+    inputInformationComponent(widget.userCourseToEdit.available.toString(), _availableInputController, LocaleKeys.available.tr()),
   ];
   List<Widget> userInformationBar2() => [
-    inputInformationComponent(widget.userCourseToEdit.completed.toString(), _completedInputController, "Completed"),
-    inputInformationComponent(widget.userCourseToEdit.promoCodeId.toString(), _promoCodeIdInputController, "Promo code"),
-    inputInformationComponent(widget.userCourseToEdit.totalPrice.toString(), _totalPriceInputController, "Total price"),
+    inputInformationComponent(widget.userCourseToEdit.completed.toString(), _completedInputController, LocaleKeys.completed.tr()),
+    inputInformationComponent(widget.userCourseToEdit.promoCodeId.toString(), _promoCodeIdInputController, LocaleKeys.promo_code.tr()),
+    inputInformationComponent(widget.userCourseToEdit.totalPrice.toString(), _totalPriceInputController, LocaleKeys.total_price.tr()),
   ];
 
   void save() {
@@ -126,129 +128,137 @@ class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage>
   @override
   Widget build(BuildContext context) {
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
 
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return UserCoursesListPage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
+                  )
                 ],
-              )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Editing record ${widget.userCourseToEdit.id}",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return UserCoursesListPage(widget.user);
+                      }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    plural(LocaleKeys.editing_record_, widget.userCourseToEdit.id!),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar1(),
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar2(),
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar2(),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
-                  ),
-                  onPressed: () async {
-                    save();
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Some data was wrong"),
-                            );
-                          });
-                    }
-                    else {
-                      if (widget.userCourseToEdit.id == null) {
-                        print("Promo code not found");
-                      } else if (widget.userCourseToEdit.id != null) {
-                        await userCourseController.updateUserCourseData(widget.userCourseToEdit);
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      save();
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Success"),
+                                    LocaleKeys.some_data_is_wrong.tr()),
                               );
                             });
                       }
-                    }
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                      else {
+                        if (widget.userCourseToEdit.id == null) {
+                          print(LocaleKeys.user_course_not_found.tr());
+                        } else if (widget.userCourseToEdit.id != null) {
+                          await userCourseController.updateUserCourseData(widget.userCourseToEdit);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      LocaleKeys.success.tr()),
+                                );
+                              });
+                        }
+                      }
+                    },
+                    child: Text(
+                      LocaleKeys.save.tr(),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

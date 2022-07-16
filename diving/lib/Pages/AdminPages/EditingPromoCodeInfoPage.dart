@@ -1,10 +1,12 @@
 import 'package:diving/Models/PromoCode.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../Controllers/PromoCodeController.dart';
 import '../../Models/User.dart';
 import '../../Repository/PromoCodeRepository.dart';
+import '../../generated/locale_keys.g.dart';
 import 'PromoCodesListPage.dart';
 
 
@@ -72,9 +74,9 @@ class _EditingPromoCodeInfoPageState extends State<EditingPromoCodeInfoPage> {
   }
 
   List<Widget> userInformationBar1() => [
-    inputInformationComponent(widget.promoCodeToEdit.promoCode ?? "", _promoCodeInputController, "Promo code"),
-    inputInformationComponent(widget.promoCodeToEdit.discount.toString(), _discountInputController, "Discount"),
-    inputInformationComponent(widget.promoCodeToEdit.isActive.toString(), _isActiveInputController, "Is active"),
+    inputInformationComponent(widget.promoCodeToEdit.promoCode ?? "", _promoCodeInputController, LocaleKeys.promo_code.tr()),
+    inputInformationComponent(widget.promoCodeToEdit.discount.toString(), _discountInputController, LocaleKeys.discount.tr()),
+    inputInformationComponent(widget.promoCodeToEdit.isActive.toString(), _isActiveInputController, LocaleKeys.is_active.tr()),
   ];
 
   void save() {
@@ -108,123 +110,131 @@ class _EditingPromoCodeInfoPageState extends State<EditingPromoCodeInfoPage> {
   @override
   Widget build(BuildContext context) {
     var curLanguage = language(widget.user.languageId!);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
-          centerTitle: true,
-          title: const Text('ProDiver Admin'),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+            centerTitle: true,
+            title: const Text('ProDiver Admin'),
+            actions: [
+              PopupMenuButton(
+                itemBuilder: (BuildContext context) => [
 
-                PopupMenuItem(
-                    value: ukrLanguage,
-                    child: Text(
-                      ukrLanguage,
-                      style: TextStyle(color: Colors.white),
-                    )),
-                PopupMenuItem(
-                  child:
-                  Text(engLanguage, style: TextStyle(color: Colors.white)),
-                  value: engLanguage,
-                )
-              ],
-              onSelected: (String newValue) {
-                setState(() {
-                  curLanguage = newValue;
-                });
-              },
-              color: Colors.black,
-              child: Icon(Icons.location_on),
-            )
-          ],
-          leading: Builder(builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return PromoCodesListPage(widget.user);
-                    }), (route) => false);
-              },
-              icon: const Icon(Icons.arrow_back),
-            );
-          }),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Colors.indigo,
-                  Colors.red,
+                  PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                      },
+                      value: ukrLanguage,
+                      child: Text(
+                        ukrLanguage,
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                    },
+                    child:
+                    Text(engLanguage, style: TextStyle(color: Colors.white)),
+                    value: engLanguage,
+                  )
                 ],
-              )),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
-                child: Text(
-                  "Editing promo code ${widget.promoCodeToEdit.id}",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                onSelected: (String newValue) {
+                  setState(() {
+                    curLanguage = newValue;
+                  });
+                },
+                color: Colors.black,
+                child: Icon(Icons.location_on),
+              )
+            ],
+            leading: Builder(builder: (BuildContext context) {
+              return IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                        return PromoCodesListPage(widget.user);
+                      }), (route) => false);
+                },
+                icon: const Icon(Icons.arrow_back),
+              );
+            }),
+          ),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.indigo,
+                    Colors.red,
+                  ],
+                )),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsetsDirectional.fromSTEB(30, 55, 40, 0),
+                  child: Text(
+                    plural(LocaleKeys.editing_promo_code_, widget.promoCodeToEdit.id!),
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 50),
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: userInformationBar1(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: userInformationBar1(),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 40,
-                width: 180,
-                margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.black),
-                  ),
-                  onPressed: () async {
-                    save();
-                    if (wrongInput == true) {
-                      return showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text(
-                                  "Data can't be empty or less than 2 liters"),
-                            );
-                          });
-                    }
-                    else {
-                      if (widget.promoCodeToEdit.id == null) {
-                        print("Promo code not found");
-                      } else if (widget.promoCodeToEdit.id != null) {
-                        await promoCodeController.updatePromoCodeData(widget.promoCodeToEdit);
+                  ],
+                ),
+                Container(
+                  height: 40,
+                  width: 180,
+                  margin: EdgeInsetsDirectional.fromSTEB(100, 25, 100, 0),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    onPressed: () async {
+                      save();
+                      if (wrongInput == true) {
                         return showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                    "Success"),
+                                    LocaleKeys.data_cant_be_empty_or_less_than_2_liters.tr()),
                               );
                             });
                       }
-                    }
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                      else {
+                        if (widget.promoCodeToEdit.id == null) {
+                          print(LocaleKeys.promo_code_not_found.tr());
+                        } else if (widget.promoCodeToEdit.id != null) {
+                          await promoCodeController.updatePromoCodeData(widget.promoCodeToEdit);
+                          return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      LocaleKeys.success.tr()),
+                                );
+                              });
+                        }
+                      }
+                    },
+                    child: Text(
+                      LocaleKeys.save.tr(),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ));
+                )
+              ],
+            ),
+          )),
+    );
   }
 }
