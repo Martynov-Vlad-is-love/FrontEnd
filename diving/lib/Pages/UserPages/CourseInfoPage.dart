@@ -35,6 +35,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
   final _promoCodeInputController = TextEditingController(text: "0");
 
+  final userController = UserController(UserRepository());
+
   Widget inputInformationComponent(String text, String label,
       [String val = '']) {
     return Container(
@@ -112,6 +114,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -121,6 +125,8 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
                   PopupMenuItem(
                     onTap: () async{
                       await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                         Text(engLanguage, style: TextStyle(color: Colors.white)),

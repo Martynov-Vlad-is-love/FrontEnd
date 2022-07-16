@@ -23,12 +23,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        title: 'ProDiving',
-        // color: Colors.red[300];
-        home: LoginScreen());
+    try{
+      return MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          title: 'ProDiving',
+          // color: Colors.red[300];
+          home: LoginScreen());
+    } catch(ex){
+      return Container();
+    }
   }
 }

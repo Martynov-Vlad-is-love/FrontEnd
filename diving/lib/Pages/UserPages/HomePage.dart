@@ -1,4 +1,6 @@
+import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Pages/LoginScreen.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:diving/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +23,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final userController = UserController(UserRepository());
+
+  void setLanguage(int languageId, BuildContext context) async{
+    if(languageId == 0){
+      await context.setLocale(Locale('uk'));
+    }
+    else{
+      await context.setLocale(Locale('en'));
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    setLanguage(widget.user.languageId!, context);
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -62,6 +76,8 @@ class _HomePageState extends State<HomePage> {
                   PopupMenuItem(
                       onTap: () async {
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       child: Text(
                         'Українська',
@@ -70,6 +86,8 @@ class _HomePageState extends State<HomePage> {
                   PopupMenuItem(
                       onTap: () async {
                         await context.setLocale(Locale('en'));
+                        widget.user.languageId = 1;
+                        await userController.updateUserData(widget.user);
                       },
                       child: Text('English',
                           style: TextStyle(color: Colors.white))),

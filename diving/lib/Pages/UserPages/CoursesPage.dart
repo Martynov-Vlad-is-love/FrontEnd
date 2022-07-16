@@ -1,6 +1,8 @@
+import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Pages/UserPages/CourseInfoPage.dart';
 import 'package:diving/Repository/CourseRepository.dart';
 import 'package:diving/Models/Course.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:diving/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,8 @@ class _CoursesPageState extends State<CoursesPage> {
 
   var client = CourseRepository();
   final courseController = CourseController(CourseRepository());
+
+  final userController = UserController(UserRepository());
 
 
   @override
@@ -51,6 +55,8 @@ class _CoursesPageState extends State<CoursesPage> {
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -60,6 +66,8 @@ class _CoursesPageState extends State<CoursesPage> {
                   PopupMenuItem(
                     onTap: () async{
                       await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                         Text(engLanguage, style: TextStyle(color: Colors.white)),
@@ -74,14 +82,6 @@ class _CoursesPageState extends State<CoursesPage> {
                 color: Colors.black,
                 child: Icon(Icons.location_on),
               ),
-              IconButton(
-                  onPressed: () {
-                    showSearch(
-                      context: context,
-                      delegate: CustomSearchDelegate(),
-                    );
-                  },
-                  icon: const Icon(Icons.search))
             ],
             title: const Text('ProDiver'),
           ),
@@ -150,69 +150,5 @@ class _CoursesPageState extends State<CoursesPage> {
             ),
           )),
     );
-  }
-}
-
-class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = [
-    'Trainee',
-    'Intermediate',
-    'Pro'
-  ];
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: Icon(Icons.clear))
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          close(context, null);
-        },
-        icon: Icon(Icons.arrow_back));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var course in searchTerms) {
-      if (course.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(course);
-      }
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(
-            title: Text(result),
-          );
-        });
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var course in searchTerms) {
-      if (course.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(course);
-      }
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(
-            title: Text(result),
-          );
-        });
   }
 }

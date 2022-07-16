@@ -36,7 +36,6 @@ class PromoCodeRepository implements Repository{
 
   @override
   Future<List<PromoCode>> getDataById(int id) async{
-    // TODO: implement getDataById
     throw UnimplementedError();
   }
   

@@ -42,12 +42,22 @@ class _AboutUsPage extends State<AboutUsPage> {
               PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
                   PopupMenuItem(
+                      onTap: () async{
+                        await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
+                      },
                       value: ukrLanguage,
                       child: Text(
                         ukrLanguage,
                         style: TextStyle(color: Colors.white),
                       )),
                   PopupMenuItem(
+                    onTap: () async{
+                      await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
+                    },
                     child:
                         Text(engLanguage, style: TextStyle(color: Colors.white)),
                     value: engLanguage,

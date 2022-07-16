@@ -52,6 +52,8 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -61,6 +63,8 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                   PopupMenuItem(
                     onTap: () async{
                       await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                     Text(engLanguage, style: TextStyle(color: Colors.white)),
@@ -75,14 +79,6 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
                 color: Colors.black,
                 child: Icon(Icons.location_on),
               ),
-              IconButton(
-                  onPressed: () {
-                    showSearch(
-                      context: context,
-                      delegate: CustomSearchDelegate(),
-                    );
-                  },
-                  icon: const Icon(Icons.search))
             ],
             title: const Text('ProDiver Admin'),
           ),
@@ -208,66 +204,3 @@ class _UsersInfoPageState extends State<UsersInfoPage> {
   }
 }
 
-class CustomSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = [
-    'Trainee',
-    'Intermediate',
-    'Pro'
-  ];
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: Icon(Icons.clear))
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          close(context, null);
-        },
-        icon: Icon(Icons.arrow_back));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var course in searchTerms) {
-      if (course.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(course);
-      }
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(
-            title: Text(result),
-          );
-        });
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var course in searchTerms) {
-      if (course.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(course);
-      }
-    }
-    return ListView.builder(
-        itemCount: matchQuery.length,
-        itemBuilder: (context, index) {
-          var result = matchQuery[index];
-          return ListTile(
-            title: Text(result),
-          );
-        });
-  }
-}

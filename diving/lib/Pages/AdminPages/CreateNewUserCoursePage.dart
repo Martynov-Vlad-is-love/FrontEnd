@@ -1,4 +1,6 @@
+import 'package:diving/Controllers/UserController.dart';
 import 'package:diving/Models/UserCourse.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,8 @@ class _CreateNewUserCoursePageState extends State<CreateNewUserCoursePage> {
 
   List<dynamic> data = [];
   bool available = false;
+
+  final userController = UserController(UserRepository());
 
   UserCourse? createNewUserCourse() {
     if(_availableInputController.text == 'true')
@@ -136,6 +140,8 @@ class _CreateNewUserCoursePageState extends State<CreateNewUserCoursePage> {
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -145,6 +151,8 @@ class _CreateNewUserCoursePageState extends State<CreateNewUserCoursePage> {
                   PopupMenuItem(
                     onTap: () async{
                       await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                     Text(engLanguage, style: TextStyle(color: Colors.white)),

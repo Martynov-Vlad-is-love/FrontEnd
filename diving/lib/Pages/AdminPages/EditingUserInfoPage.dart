@@ -169,6 +169,8 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -177,7 +179,9 @@ class _EditingUserInfoPageState extends State<EditingUserInfoPage> {
                       )),
                   PopupMenuItem(
                     onTap: () async{
-                      await context.setLocale(Locale('uk'));
+                      await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                     Text(engLanguage, style: TextStyle(color: Colors.white)),

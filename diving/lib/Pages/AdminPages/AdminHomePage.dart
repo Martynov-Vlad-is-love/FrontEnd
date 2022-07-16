@@ -1,4 +1,6 @@
 
+import 'package:diving/Controllers/UserController.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:diving/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+  final userController = UserController(UserRepository());
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,16 +58,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
               PopupMenuButton(
                 itemBuilder: (BuildContext context) => [
                   PopupMenuItem(
-                      onTap: () async{
+                      onTap: () async {
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       child: Text(
                         'Українська',
                         style: TextStyle(color: Colors.white),
                       )),
                   PopupMenuItem(
-                      onTap: () async{
+                      onTap: () async {
                         await context.setLocale(Locale('en'));
+                        widget.user.languageId = 1;
+                        await userController.updateUserData(widget.user);
                       },
                       child:
                       Text('English', style: TextStyle(color: Colors.white))),

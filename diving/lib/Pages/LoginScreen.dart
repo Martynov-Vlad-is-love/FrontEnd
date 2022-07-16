@@ -28,6 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    try{
+
+
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -201,5 +204,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           )),
     );
+    }catch(ex){
+      print(ex);
+      return Container(color: Colors.indigo,);
+    }
   }
 }

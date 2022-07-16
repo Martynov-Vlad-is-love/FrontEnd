@@ -1,3 +1,5 @@
+import 'package:diving/Controllers/UserController.dart';
+import 'package:diving/Repository/UserRepository.dart';
 import 'package:diving/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,6 +37,8 @@ class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage>
   final _totalPriceInputController = TextEditingController(text: "");
 
   bool wrongInput = false;
+
+  final userController = UserController(UserRepository());
 
   Widget inputInformationComponent(
       String text, TextEditingController input, String label) {
@@ -141,6 +145,8 @@ class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage>
                   PopupMenuItem(
                       onTap: () async{
                         await context.setLocale(Locale('uk'));
+                        widget.user.languageId = 0;
+                        await userController.updateUserData(widget.user);
                       },
                       value: ukrLanguage,
                       child: Text(
@@ -150,6 +156,8 @@ class _EditingUserCoursesInfoPageState extends State<EditingUserCoursesInfoPage>
                   PopupMenuItem(
                     onTap: () async{
                       await context.setLocale(Locale('en'));
+                      widget.user.languageId = 1;
+                      await userController.updateUserData(widget.user);
                     },
                     child:
                     Text(engLanguage, style: TextStyle(color: Colors.white)),
