@@ -72,6 +72,16 @@ class _OwnCoursesPageState extends State<OwnCoursesPage> {
                         style: pw.TextStyle(
                             font: myFont,
                             fontSize: 40,
+                            fontWeight: pw.FontWeight.bold)),
+                    pw.Text("Hours under water: ${widget.user.hoursUnderWater}",
+                        style: pw.TextStyle(
+                            font: myFont,
+                            fontSize: 40,
+                            fontWeight: pw.FontWeight.bold)),
+                    pw.Text("Max depth: ${widget.user.maxDepth}",
+                        style: pw.TextStyle(
+                            font: myFont,
+                            fontSize: 40,
                             fontWeight: pw.FontWeight.bold))
                   ])
               )

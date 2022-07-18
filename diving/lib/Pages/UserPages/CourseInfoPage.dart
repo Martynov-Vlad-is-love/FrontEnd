@@ -71,16 +71,16 @@ class _CourseInfoPageState extends State<CourseInfoPage> {
 
   List<Widget> userInformationBar1() => [
         inputInformationComponent(
-            widget.course.courseName ?? "", "Course name"),
+            widget.course.courseName ?? "", LocaleKeys.course_name.tr()),
         inputInformationComponent(
-            widget.course.description ?? "", "Description"),
+            widget.course.description ?? "", LocaleKeys.description.tr()),
       ];
 
   List<Widget> userInformationBar2() => [
         inputInformationComponent(
-            widget.course.cost.toString(), "Course Cost", "dollars"),
+            widget.course.cost.toString(), LocaleKeys.course_cost.tr(), LocaleKeys.dollars.tr()),
         inputInformationComponent(widget.course.minHoursUnderWater.toString(),
-            "Minimal hours under water"),
+            LocaleKeys.minimal_hours_under_water.tr()),
       ];
 
   UserCourse createNewUserCourse(int promoCode) {
